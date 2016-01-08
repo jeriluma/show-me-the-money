@@ -28,20 +28,21 @@ app.directive('transactionsEdit', function() {
                 editingElement.fadeIn();
             });
 
-            // Issue: submits for all
             scope.save = function(transaction, event) {
                 if(event) {
                     event.preventDefault(); // prevents page refresh
                 }
 
-                transactionsCtrl.editTransaction(transaction).then(function() {
-                    isEditing = false;
-                    editingElement.fadeOut();
-                });
-
+                transactionsCtrl.edit(transaction);
             };
 
-
+            scope.$watch(transactionsCtrl.transacting, function() {
+                if(transactionsCtrl.transacting) {
+                    isEditing = false;
+                } else {
+                    editingElement.fadeOut();
+                }
+            });
         }
     }
 });

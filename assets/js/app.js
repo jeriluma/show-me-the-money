@@ -48,19 +48,31 @@ app.directive('transactionsEdit', function() {
                 editingElement.fadeIn();
             });
 
-            // Issue: submits for all
             scope.save = function(transaction, event) {
                 if(event) {
                     event.preventDefault(); // prevents page refresh
                 }
 
-                transactionsCtrl.editTransaction(transaction).then(function() {
-                    isEditing = false;
-                    editingElement.fadeOut();
-                });
-
+                transactionsCtrl.edit(transaction);
             };
 
+            scope.$watch(transactionsCtrl.transacting, function() {
+                if(transactionsCtrl.transacting) {
+                    isEditing = false;
+                } else {
+                    editingElement.fadeOut();
+                }
+            });
+        }
+    }
+});
+app.directive('transactionsAdd', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'app/components/transactions/add/view.html',
+        require: '?transactionsTable',
+        link: function(scope, element, attrs, transactionCtrl) {
 
         }
     }
@@ -95,7 +107,7 @@ app.directive('transactionsTable', function() {
             });
 
             transactionsService.service('GET', 'transactions').then(function(response){
-                $scope.headers = ['Date', 'Description', 'Account', 'Categories', 'Amount', 'Balance', 'Status'];
+                $scope.headers = ['ID', 'Date', 'Description', 'Account', 'Category', 'Amount', 'Balance', 'Status'];
                 $scope.transactions = response;
             });
 
@@ -107,33 +119,23 @@ app.directive('transactionsTable', function() {
                 transactionsService.service('DELETE', 'transactions/' + transaction.id).then(getTransactions());
             };
 
-            this.editTransaction = function(transaction) {
-                return transactionsService.service('PUT', 'transactions/' + transaction.id, transaction).then(getTransactions());
+            this.transacting = false;
+            this.edit = function(transaction) {
+                this.gettingTransaction = true;
+
+                transactionsService.service('PUT', 'transactions/' + transaction.id, transaction).then(
+                    function(response) {
+                        transactionsService.service('GET', 'transactions').then(function(response){
+                            $scope.transactions = response;
+                            this.transacting = false;
+                        });
+                    }
+                );
+
             };
-
-            function getTransactions() {
-                transactionsService.service('GET', 'transactions').then(function(response){
-                    transactionsService.service('GET', 'transactions').then(function(response){
-                        $scope.transactions = response;
-                    });
-                });
-
-            }
 
         },
         link: function(scope, element, attrs) {
-
-
-        }
-    }
-});
-app.directive('transactionsAdd', function() {
-    return {
-        restrict: 'E',
-        replace: true,
-        templateUrl: 'app/components/transactions/add/view.html',
-        require: '?transactionsTable',
-        link: function(scope, element, attrs, transactionCtrl) {
 
         }
     }

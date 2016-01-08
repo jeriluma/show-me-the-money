@@ -13,19 +13,24 @@
   ],
   "categories": [
     {
-      "id": 1,
-      "name": "Income",
-      "description": "Income",
-      "parentId": null
+      "id": 0,
+      "name": "Bills",
+      "description": "",
+      "parentId": "Expense"
     },
     {
-      "id": 2,
-      "name": "Expense",
-      "description": "Expense",
-      "parentId": null
+      "id": 1,
+      "name": "Salary",
+      "description": "",
+      "parentId": "Income"
     }
   ],
   "status": [
+    {
+      "id": 0,
+      "name": "Draft",
+      "description": "Transactions that have not been official."
+    },
     {
       "id": 1,
       "name": "Pending",
@@ -50,50 +55,39 @@
       "id": 5,
       "name": "Partial",
       "description": "Transactions that have not been fully paid off."
-    },
-    {
-      "id": 6,
-      "name": "Draft",
-      "description": "Transactions that have not been official."
     }
   ],
   "transactions": [
     {
       "id": 1,
-      "date": "2016-01-02",
+      "date": "2016-01-01",
       "description": "asdf",
       "accountId": 1,
-      "categoryIds": [
-        1
-      ],
-      "statusId": 1,
+      "categoryId": 1,
+      "statusId": 4,
       "parentId": null,
-      "amount": 2,
+      "amount": 2.55,
       "balance": 2,
       "accountName": "Credit"
     },
     {
       "id": 2,
       "date": "2016-01-02",
-      "description": "asdf123",
+      "description": "asdf12",
       "accountId": 1,
-      "categoryIds": [
-        1
-      ],
-      "statusId": 1,
+      "categoryId": 1,
+      "statusId": 5,
       "parentId": 1,
       "amount": 10,
       "balance": 22
     },
     {
-      "id": 2,
-      "date": "2016-01-02",
-      "description": "asdf",
+      "id": 3,
+      "date": "2016-01-03",
+      "description": "asdf123",
       "accountId": 1,
-      "categoryIds": [
-        1
-      ],
-      "statusId": 1,
+      "categoryId": 0,
+      "statusId": 4,
       "parentId": 1,
       "amount": 10,
       "balance": 22

@@ -9,9 +9,12 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="transaction in transactions">
+            <tr ng-repeat="transaction in transactions | orderBy: -transaction.date:true">
                 <td>
                     <input type="checkbox" ng-checked="checked(transaction)">
+                </td>
+                <td>
+                    <span ng-bind="transaction.id"></span>
                 </td>
                 <td ng-bind="transaction.date"></td>
                 <td transactions-edit type="text">
@@ -35,7 +38,7 @@
                         <i class="material-icons">arrow_drop_down</i>
                     </span>
                     <span class="transaction-editing">
-                        <form action="transactionForm">
+                        <form name="transactionForm">
                             <select
                                     name="account" id=""
                                     ng-model="transaction.accountId"
@@ -45,10 +48,70 @@
                         </form>
                     </span>
                 </td>
-                <td ng-bind="transaction.categoryIds"></td>
-                <td ng-bind="'$' + transaction.amount"></td>
-                <td ng-bind="'$' + transaction.balance"></td>
-                <td ng-bind="transaction.statusId"></td>
+                <td transactions-edit type="select">
+                    <span ng-bind="categories[transaction.categoryId].name"></span>
+                    <span class="transaction-edit-hover">
+                        <i class="material-icons">arrow_drop_down</i>
+                    </span>
+                    <span class="transaction-editing">
+                        <form name="transactionForm">
+                            <select
+                                    name="category" id=""
+                                    ng-model="transaction.categoryId"
+                                    ng-options="category.id as category.name group by category.parentId for category in categories"
+                                    ng-change="save(transaction)"
+                            ></select>
+                        </form>
+                    </span>
+                </td>
+                <td transactions-edit type="text">
+                    <span ng-bind="'$' + transaction.amount"></span>
+                    <span class="transaction-edit-hover">
+                        <i class="material-icons md-18">mode_edit</i>
+                    </span>
+                    <span class="transaction-editing">
+                        <form
+                                action=""
+                                name="transactionForm"
+                                ng-submit="transactionForm.$valid && save(transaction, $event)"
+                                >
+                            <label for="">$</label>
+                            <input type="text" size="6" name="amount" ng-model="transaction.amount" required>
+                        </form>
+                    </span>
+                </td>
+                <td transactions-edit type="text">
+                    <span ng-bind="'$' + transaction.balance"></span>
+                    <span class="transaction-edit-hover">
+                        <i class="material-icons md-18">mode_edit</i>
+                    </span>
+                    <span class="transaction-editing">
+                        <form
+                                action=""
+                                name="transactionForm"
+                                ng-submit="transactionForm.$valid && save(transaction, $event)"
+                                >
+                            <label for="">$</label>
+                            <input type="text" size="6" name="amount" ng-model="transaction.balance" required>
+                        </form>
+                    </span>
+                </td>
+                <td transactions-edit type="select">
+                    <span ng-bind="status[transaction.statusId].name"></span>
+                    <span class="transaction-edit-hover">
+                        <i class="material-icons">arrow_drop_down</i>
+                    </span>
+                    <span class="transaction-editing">
+                        <form name="transactionForm">
+                            <select
+                                    name="status" id=""
+                                    ng-model="transaction.statusId"
+                                    ng-options="s.id as s.name for s in status"
+                                    ng-change="save(transaction)"
+                                    ></select>
+                        </form>
+                    </span>
+                </td>
             </tr>
         </tbody>
     </table>
