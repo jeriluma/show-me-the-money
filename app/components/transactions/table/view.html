@@ -1,0 +1,55 @@
+<div class="transactions table">
+    <table>
+        <thead>
+            <tr>
+                <td>
+                    <input type="checkbox">
+                </td>
+               <td ng-repeat="header in headers" ng-bind="header"></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="transaction in transactions">
+                <td>
+                    <input type="checkbox" ng-checked="checked(transaction)">
+                </td>
+                <td ng-bind="transaction.date"></td>
+                <td transactions-edit type="text">
+                    <span ng-bind="transaction.description"></span>
+                    <span class="transaction-edit-hover">
+                        <i class="material-icons md-18">mode_edit</i>
+                    </span>
+                    <span class="transaction-editing">
+                        <form
+                            action=""
+                            name="transactionForm"
+                            ng-submit="transactionForm.$valid && save(transaction, $event)"
+                        >
+                            <input type="text" name="description" ng-model="transaction.description" required>
+                        </form>
+                    </span>
+                </td>
+                <td transactions-edit type="select">
+                    <span ng-bind="transaction.accountId"></span>
+                    <span class="transaction-edit-hover">
+                        V
+                    </span>
+                    <span class="transaction-editing">
+                        <form action="transactionForm">
+                            <select
+                                    name="account" id=""
+                                    ng-model="transaction.accountId"
+                                    ng-options="account.id as account.name for account in accounts"
+                                    ng-change="save(transaction)"
+                            ></select>
+                        </form>
+                    </span>
+                </td>
+                <td ng-bind="transaction.categoryIds"></td>
+                <td ng-bind="'$' + transaction.amount"></td>
+                <td ng-bind="'$' + transaction.balance"></td>
+                <td ng-bind="transaction.statusId"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,22 @@
+{
+  "name": "show-me-the-money",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "latest",
+    "angular": "latest",
+    "angular-animate": "latest",
+    "angular-aria": "latest",
+    "angular-material": "latest",
+    "angular-messages": "latest",
+    "angular-cookies": "latest",
+    "material-design-icons": "latest",
+    "flexboxgrid": "latest"
+  }
+}

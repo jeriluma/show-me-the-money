@@ -1,0 +1,101 @@
+{
+  "accounts": [
+    {
+      "id": 1,
+      "name": "Debit",
+      "description": "Debit"
+    },
+    {
+      "id": 2,
+      "name": "Credit",
+      "description": "Credit"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Income",
+      "description": "Income",
+      "parentId": null
+    },
+    {
+      "id": 2,
+      "name": "Expense",
+      "description": "Expense",
+      "parentId": null
+    }
+  ],
+  "status": [
+    {
+      "id": 1,
+      "name": "Pending",
+      "description": "Transactions that have not been resolved."
+    },
+    {
+      "id": 2,
+      "name": "Unpaid",
+      "description": "Transactions that have not been paid off."
+    },
+    {
+      "id": 3,
+      "name": "Paid",
+      "description": "Transactions that have been paid off."
+    },
+    {
+      "id": 4,
+      "name": "Overdue",
+      "description": "Transactions that have not been paid off and past due date."
+    },
+    {
+      "id": 5,
+      "name": "Partial",
+      "description": "Transactions that have not been fully paid off."
+    },
+    {
+      "id": 6,
+      "name": "Draft",
+      "description": "Transactions that have not been official."
+    }
+  ],
+  "transactions": [
+    {
+      "id": 1,
+      "date": "2016-01-02",
+      "description": "asdf",
+      "accountId": 2,
+      "categoryIds": [
+        1
+      ],
+      "statusId": 1,
+      "parentId": null,
+      "amount": 2,
+      "balance": 2
+    },
+    {
+      "id": 2,
+      "date": "2016-01-02",
+      "description": "asdf",
+      "accountId": 2,
+      "categoryIds": [
+        1
+      ],
+      "statusId": 1,
+      "parentId": 1,
+      "amount": 10,
+      "balance": 22
+    },
+    {
+      "id": 2,
+      "date": "2016-01-02",
+      "description": "asdf",
+      "accountId": 2,
+      "categoryIds": [
+        1
+      ],
+      "statusId": 1,
+      "parentId": 1,
+      "amount": 10,
+      "balance": 22
+    }
+  ]
+}
