@@ -30,9 +30,9 @@
                     </span>
                 </td>
                 <td transactions-edit type="select">
-                    <span ng-bind="transaction.accountId"></span>
+                    <span ng-bind="accounts[transaction.accountId].name"></span>
                     <span class="transaction-edit-hover">
-                        V
+                        <i class="material-icons">arrow_drop_down</i>
                     </span>
                     <span class="transaction-editing">
                         <form action="transactionForm">

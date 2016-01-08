@@ -34,9 +34,11 @@ app.directive('transactionsEdit', function() {
                     event.preventDefault(); // prevents page refresh
                 }
 
-                transactionsCtrl.editTransaction(transaction);
-                isEditing = false;
-                editingElement.fadeOut();
+                transactionsCtrl.editTransaction(transaction).then(function() {
+                    isEditing = false;
+                    editingElement.fadeOut();
+                });
+
             };
 
 

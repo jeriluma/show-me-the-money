@@ -18,17 +18,6 @@ app.service('transactionsService', ['$http', '$q', function($http, $q){
     };
 }]);
 
-app.directive('transactionsAdd', function() {
-    return {
-        restrict: 'E',
-        replace: true,
-        templateUrl: 'app/components/transactions/add/view.html',
-        require: '?transactionsTable',
-        link: function(scope, element, attrs, transactionCtrl) {
-
-        }
-    }
-});
 app.directive('transactionsEdit', function() {
     return {
         restrict: 'A',
@@ -65,9 +54,11 @@ app.directive('transactionsEdit', function() {
                     event.preventDefault(); // prevents page refresh
                 }
 
-                transactionsCtrl.editTransaction(transaction);
-                isEditing = false;
-                editingElement.fadeOut();
+                transactionsCtrl.editTransaction(transaction).then(function() {
+                    isEditing = false;
+                    editingElement.fadeOut();
+                });
+
             };
 
 
@@ -105,9 +96,6 @@ app.directive('transactionsTable', function() {
 
             transactionsService.service('GET', 'transactions').then(function(response){
                 $scope.headers = ['Date', 'Description', 'Account', 'Categories', 'Amount', 'Balance', 'Status'];
-                $scope.getAccountName = function(transaction) {
-                    return $filter('filter')($scope.accounts, function (d) {return d.id === transaction.id;})[0].name;
-                };
                 $scope.transactions = response;
             });
 
@@ -120,18 +108,32 @@ app.directive('transactionsTable', function() {
             };
 
             this.editTransaction = function(transaction) {
-                transactionsService.service('PUT', 'transactions/' + transaction.id, transaction).then(getTransactions());
+                return transactionsService.service('PUT', 'transactions/' + transaction.id, transaction).then(getTransactions());
             };
 
             function getTransactions() {
                 transactionsService.service('GET', 'transactions').then(function(response){
-                    $scope.transactions = response;
+                    transactionsService.service('GET', 'transactions').then(function(response){
+                        $scope.transactions = response;
+                    });
                 });
+
             }
 
         },
         link: function(scope, element, attrs) {
 
+
+        }
+    }
+});
+app.directive('transactionsAdd', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'app/components/transactions/add/view.html',
+        require: '?transactionsTable',
+        link: function(scope, element, attrs, transactionCtrl) {
 
         }
     }

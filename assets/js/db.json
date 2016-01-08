@@ -1,12 +1,12 @@
 {
   "accounts": [
     {
-      "id": 1,
+      "id": 0,
       "name": "Debit",
       "description": "Debit"
     },
     {
-      "id": 2,
+      "id": 1,
       "name": "Credit",
       "description": "Credit"
     }
@@ -62,20 +62,21 @@
       "id": 1,
       "date": "2016-01-02",
       "description": "asdf",
-      "accountId": 2,
+      "accountId": 1,
       "categoryIds": [
         1
       ],
       "statusId": 1,
       "parentId": null,
       "amount": 2,
-      "balance": 2
+      "balance": 2,
+      "accountName": "Credit"
     },
     {
       "id": 2,
       "date": "2016-01-02",
-      "description": "asdf",
-      "accountId": 2,
+      "description": "asdf123",
+      "accountId": 1,
       "categoryIds": [
         1
       ],
@@ -88,7 +89,7 @@
       "id": 2,
       "date": "2016-01-02",
       "description": "asdf",
-      "accountId": 2,
+      "accountId": 1,
       "categoryIds": [
         1
       ],

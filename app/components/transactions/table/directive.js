@@ -18,9 +18,6 @@ app.directive('transactionsTable', function() {
 
             transactionsService.service('GET', 'transactions').then(function(response){
                 $scope.headers = ['Date', 'Description', 'Account', 'Categories', 'Amount', 'Balance', 'Status'];
-                $scope.getAccountName = function(transaction) {
-                    return $filter('filter')($scope.accounts, function (d) {return d.id === transaction.id;})[0].name;
-                };
                 $scope.transactions = response;
             });
 
@@ -33,13 +30,16 @@ app.directive('transactionsTable', function() {
             };
 
             this.editTransaction = function(transaction) {
-                transactionsService.service('PUT', 'transactions/' + transaction.id, transaction).then(getTransactions());
+                return transactionsService.service('PUT', 'transactions/' + transaction.id, transaction).then(getTransactions());
             };
 
             function getTransactions() {
                 transactionsService.service('GET', 'transactions').then(function(response){
-                    $scope.transactions = response;
+                    transactionsService.service('GET', 'transactions').then(function(response){
+                        $scope.transactions = response;
+                    });
                 });
+
             }
 
         },
