@@ -1,20 +1,29 @@
 <div class="transactions table">
+    <transactions-add></transactions-add>
+
+    <div class="transactions delete">
+        <span class="transaction-delete">
+            <i class="material-icons md-18" ng-click="delete()">delete</i>
+        </span>
+        <span class="transaction-sync">
+            <i class="material-icons md-18">sync</i>
+        </span>
+    </div>
+
     <span ng-show="loading" class="transaction-sync">
         <i class="material-icons md-18">sync</i>
     </span>
     <table ng-show="!loading">
         <thead>
             <tr>
-                <td>
-                    <input type="checkbox">
-                </td>
+                <td></td>
                <td ng-repeat="header in headers" ng-bind="header"></td>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat="transaction in transactions | orderBy: -transaction.date:true">
                 <td>
-                    <input type="checkbox" ng-checked="checked(transaction)">
+                    <input class="transactions-check" type="checkbox" ng-click="checked(transaction)">
                 </td>
                 <td>
                     <span ng-bind="transaction.id"></span>
@@ -103,25 +112,9 @@
                         <i class="material-icons md-18">sync</i>
                     </span>
                 </td>
-                <td transactions-edit type="text">
+                <td type="text">
                     <span class="transaction-data">
                         <span ng-bind="'$' + transaction.balance"></span>
-                    </span>
-                    <span class="transaction-edit-trigger">
-                        <i class="material-icons md-18">mode_edit</i>
-                    </span>
-                    <span class="transaction-edit">
-                        <form name="transactionFormBalance"
-                                action=""
-                                name="transactionForm"
-                                ng-submit="transactionFormBalance.$valid && save(transaction, $event)"
-                                >
-                            <label for="">$</label>
-                            <input type="text" size="6" name="amount" ng-model="transaction.balance" required>
-                        </form>
-                    </span>
-                    <span class="transaction-sync">
-                        <i class="material-icons md-18">sync</i>
                     </span>
                 </td>
                 <td transactions-edit type="select">
@@ -134,11 +127,11 @@
                     <span class="transaction-edit">
                         <form name="transactionFormStatus">
                             <select
-                                    name="status" id=""
-                                    ng-model="transaction.statusId"
-                                    ng-options="s.id as s.name for s in status"
-                                    ng-change="save(transaction)"
-                                    ></select>
+                                name="status" id=""
+                                ng-model="transaction.statusId"
+                                ng-options="s.id as s.name for s in status"
+                                ng-change="save(transaction)"
+                            ></select>
                         </form>
                     </span>
                     <span class="transaction-sync">

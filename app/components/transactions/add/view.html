@@ -1,3 +1,38 @@
 <div class="transaction add">
-    <button ng-click="addTransaction()">Add</button>
+    <form action="" name="transactionFormAdd" ng-submit="add($event)" class="transaction-form">
+        <label for="">Date</label>
+
+        <label for="">Description</label>
+        <input type="text" ng-model="transaction.description">
+
+        <label for="">Account</label>
+        <select
+            name="account" id=""
+            ng-model="transaction.accountId"
+            ng-options="account.id as account.name for account in accounts"
+        ></select>
+
+        <label for="">Category</label>
+        <select
+            name="category" id=""
+            ng-model="transaction.categoryId"
+            ng-options="category.id as category.name group by category.parentId for category in categories"
+        ></select>
+
+        <label for="">Amount</label>
+        <input type="text" ng-model="transaction.amount">
+
+        <label for="">Status</label>
+        <select
+            name="status" id=""
+            ng-model="transaction.statusId"
+            ng-options="s.id as s.name for s in status"
+            ng-change="save(transaction)"
+        ></select>
+
+        <button type="submit">Add</button>
+        <span class="transaction-sync">
+            <i class="material-icons md-18">sync</i>
+        </span>
+    </form>
 </div>
