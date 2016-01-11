@@ -1,5 +1,8 @@
 <div class="transactions table">
-    <table>
+    <span ng-show="loading" class="transaction-sync">
+        <i class="material-icons md-18">sync</i>
+    </span>
+    <table ng-show="!loading">
         <thead>
             <tr>
                 <td>
@@ -18,27 +21,34 @@
                 </td>
                 <td ng-bind="transaction.date"></td>
                 <td transactions-edit type="text">
-                    <span ng-bind="transaction.description"></span>
-                    <span class="transaction-edit-hover">
+                    <span class="transaction-data">
+                        <span ng-bind="transaction.description"></span>
+                    </span>
+                    <span class="transaction-edit-trigger">
                         <i class="material-icons md-18">mode_edit</i>
                     </span>
-                    <span class="transaction-editing">
-                        <form
+                    <span class="transaction-edit">
+                        <form name="transactionFormDescription"
                             action=""
-                            name="transactionForm"
-                            ng-submit="transactionForm.$valid && save(transaction, $event)"
+                            name="transactionFormDescription"
+                            ng-submit="transactionFormDescription.$valid && save(transaction, $event)"
                         >
                             <input type="text" name="description" ng-model="transaction.description" required>
                         </form>
                     </span>
+                    <span class="transaction-sync">
+                        <i class="material-icons md-18">sync</i>
+                    </span>
                 </td>
-                <td transactions-edit type="select">
-                    <span ng-bind="accounts[transaction.accountId].name"></span>
-                    <span class="transaction-edit-hover">
+                <td transactions-edit type="select" style="width: 2000px" ng-init="oldTransaction = transaction">
+                    <span class="transaction-data">
+                        <span ng-bind="accounts[transaction.accountId].name"></span>
+                    </span>
+                    <span class="transaction-edit-trigger">
                         <i class="material-icons">arrow_drop_down</i>
                     </span>
-                    <span class="transaction-editing">
-                        <form name="transactionForm">
+                    <span class="transaction-edit">
+                        <form name="transactionFormAccount">
                             <select
                                     name="account" id=""
                                     ng-model="transaction.accountId"
@@ -47,14 +57,19 @@
                             ></select>
                         </form>
                     </span>
+                    <span class="transaction-sync">
+                        <i class="material-icons md-18">sync</i>
+                    </span>
                 </td>
                 <td transactions-edit type="select">
-                    <span ng-bind="categories[transaction.categoryId].name"></span>
-                    <span class="transaction-edit-hover">
+                    <span class="transaction-data">
+                        <span ng-bind="categories[transaction.categoryId].name"></span>
+                    </span>
+                    <span class="transaction-edit-trigger">
                         <i class="material-icons">arrow_drop_down</i>
                     </span>
-                    <span class="transaction-editing">
-                        <form name="transactionForm">
+                    <span class="transaction-edit">
+                        <form name="transactionFormCategory">
                             <select
                                     name="category" id=""
                                     ng-model="transaction.categoryId"
@@ -63,46 +78,61 @@
                             ></select>
                         </form>
                     </span>
+                    <span class="transaction-sync">
+                        <i class="material-icons md-18">sync</i>
+                    </span>
                 </td>
                 <td transactions-edit type="text">
-                    <span ng-bind="'$' + transaction.amount"></span>
-                    <span class="transaction-edit-hover">
+                    <span class="transaction-data">
+                        <span ng-bind="'$' + transaction.amount"></span>
+                    </span>
+                    <span class="transaction-edit-trigger">
                         <i class="material-icons md-18">mode_edit</i>
                     </span>
-                    <span class="transaction-editing">
-                        <form
+                    <span class="transaction-edit">
+                        <form name="transactionFormAmount"
                                 action=""
                                 name="transactionForm"
-                                ng-submit="transactionForm.$valid && save(transaction, $event)"
+                                ng-submit="transactionFormAmount.$valid && save(transaction, $event)"
                                 >
                             <label for="">$</label>
                             <input type="text" size="6" name="amount" ng-model="transaction.amount" required>
                         </form>
                     </span>
+                    <span class="transaction-sync">
+                        <i class="material-icons md-18">sync</i>
+                    </span>
                 </td>
                 <td transactions-edit type="text">
-                    <span ng-bind="'$' + transaction.balance"></span>
-                    <span class="transaction-edit-hover">
+                    <span class="transaction-data">
+                        <span ng-bind="'$' + transaction.balance"></span>
+                    </span>
+                    <span class="transaction-edit-trigger">
                         <i class="material-icons md-18">mode_edit</i>
                     </span>
-                    <span class="transaction-editing">
-                        <form
+                    <span class="transaction-edit">
+                        <form name="transactionFormBalance"
                                 action=""
                                 name="transactionForm"
-                                ng-submit="transactionForm.$valid && save(transaction, $event)"
+                                ng-submit="transactionFormBalance.$valid && save(transaction, $event)"
                                 >
                             <label for="">$</label>
                             <input type="text" size="6" name="amount" ng-model="transaction.balance" required>
                         </form>
                     </span>
+                    <span class="transaction-sync">
+                        <i class="material-icons md-18">sync</i>
+                    </span>
                 </td>
                 <td transactions-edit type="select">
-                    <span ng-bind="status[transaction.statusId].name"></span>
-                    <span class="transaction-edit-hover">
+                    <span class="transaction-data">
+                        <span ng-bind="status[transaction.statusId].name"></span>
+                    </span>
+                    <span class="transaction-edit-trigger">
                         <i class="material-icons">arrow_drop_down</i>
                     </span>
-                    <span class="transaction-editing">
-                        <form name="transactionForm">
+                    <span class="transaction-edit">
+                        <form name="transactionFormStatus">
                             <select
                                     name="status" id=""
                                     ng-model="transaction.statusId"
@@ -110,6 +140,9 @@
                                     ng-change="save(transaction)"
                                     ></select>
                         </form>
+                    </span>
+                    <span class="transaction-sync">
+                        <i class="material-icons md-18">sync</i>
                     </span>
                 </td>
             </tr>

@@ -2,13 +2,17 @@ app.directive('transactionsEdit', function() {
     return {
         restrict: 'A',
         require: '^transactionsTable',
+        scope: true,
         link: function(scope, element, attrs, transactionsCtrl) {
-            var editTrigger = $(element).find('.transaction-edit-hover');
-            var editingElement = $(element).find('.transaction-editing');
+            var data = $(element).find('.transaction-data');
+            var editTrigger = $(element).find('.transaction-edit-trigger');
+            var editingElement = $(element).find('.transaction-edit');
+            var syncElement = $(element).find('.transaction-sync');
             var isEditing = false;
 
             editTrigger.hide();
             editingElement.hide();
+            syncElement.hide();
 
             $(element).bind('mouseover', function() {
                 if(!isEditing) {
@@ -23,9 +27,11 @@ app.directive('transactionsEdit', function() {
             });
 
             $(editTrigger).bind('click', function() {
-                $(element).children().hide();
-                isEditing = true;
-                editingElement.fadeIn();
+                data.fadeOut().promise().done(function() {
+                    isEditing = true;
+                    editingElement.fadeIn();
+                    editTrigger.hide();
+                });
             });
 
             scope.save = function(transaction, event) {
@@ -33,16 +39,20 @@ app.directive('transactionsEdit', function() {
                     event.preventDefault(); // prevents page refresh
                 }
 
-                transactionsCtrl.edit(transaction);
+                editingElement.fadeOut().promise().done(function() {
+                    syncElement.fadeIn().promise().done(function() {
+                        transactionsCtrl.edit(transaction).then(function () {
+                            syncElement.fadeOut().promise().done(function() {
+                                data.fadeIn(500).promise().done(function() {
+                                    isEditing = false;
+                                    editTrigger.show();
+                                });
+                            });
+                        });
+                    });
+                });
             };
 
-            scope.$watch(transactionsCtrl.transacting, function() {
-                if(transactionsCtrl.transacting) {
-                    isEditing = false;
-                } else {
-                    editingElement.fadeOut();
-                }
-            });
         }
     }
 });

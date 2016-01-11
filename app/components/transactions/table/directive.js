@@ -3,7 +3,9 @@ app.directive('transactionsTable', function() {
         restrict: 'E',
         replace: true,
         templateUrl: 'app/components/transactions/table/view.html',
-        controller: function($scope, transactionsService, $filter) {
+        controller: function($scope, transactionsService, $q) {
+            $scope.loading = true;
+
             transactionsService.service('GET', 'categories').then(function(response){
                 $scope.categories = response;
             });
@@ -19,30 +21,33 @@ app.directive('transactionsTable', function() {
             transactionsService.service('GET', 'transactions').then(function(response){
                 $scope.headers = ['ID', 'Date', 'Description', 'Account', 'Category', 'Amount', 'Balance', 'Status'];
                 $scope.transactions = response;
+                $scope.loading = false;
             });
 
-            $scope.addTransaction = function(transaction) {
-                transactionsService.service('POST', 'transactions', transaction).then(getTransactions());
+            this.add = function(transaction) {
+                return updateTransactions('POST', 'transactions/' + transaction, transaction);
             };
 
-            $scope.deleteTransaction = function(transaction) {
-                transactionsService.service('DELETE', 'transactions/' + transaction.id).then(getTransactions());
+            this.delete = function(transaction) {
+                return updateTransactions('DELETE', 'transactions/' + transaction.id, transaction);
             };
 
-            this.transacting = false;
             this.edit = function(transaction) {
-                this.gettingTransaction = true;
-
-                transactionsService.service('PUT', 'transactions/' + transaction.id, transaction).then(
-                    function(response) {
-                        transactionsService.service('GET', 'transactions').then(function(response){
-                            $scope.transactions = response;
-                            this.transacting = false;
-                        });
-                    }
-                );
-
+                return updateTransactions('PUT', 'transactions/' + transaction.id, transaction);
             };
+
+            function updateTransactions(method, url, transaction) {
+                var deferred = $q.defer();
+
+                transactionsService.service(method, url, transaction).then(function() {
+                    transactionsService.service('GET', 'transactions').then(function(response){
+                        $scope.transactions = response;
+                        deferred.resolve(true);
+                    });
+                });
+
+                return deferred.promise;
+            }
 
         },
         link: function(scope, element, attrs) {
