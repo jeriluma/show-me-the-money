@@ -72,12 +72,14 @@ body {
 .transactions.table td {
   margin: 0;
   border-bottom: 1px solid #c0c0c0;
-  padding: 1em; }
-  .transactions.table td.date {
-    min-width: 82px; }
-  .transactions.table td.content {
-    min-width: 100px; }
-  .transactions.table td.number {
-    min-width: 100px; }
-  .transactions.table td input[type="text"] {
-    width: 100%; }
+  padding: 1em;
+  min-width: 85px; }
+  .transactions.table td .transaction-data {
+    margin-top: 8px;
+    margin-left: 4px;
+    margin-bottom: 24px;
+    display: inline-block; }
+  .transactions.table td md-input-container {
+    margin: 0; }
+  .transactions.table td md-select {
+    margin: 0; }

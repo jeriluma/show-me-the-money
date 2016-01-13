@@ -11,14 +11,15 @@ app.directive('transactionsAdd', function() {
 
             syncElement.hide();
 
+            var date = new Date();
+
             scope.transaction = {
-                date: "2016-01-03",
+                date: date,
                 description: "",
                 accountId: 0,
                 categoryId: 0,
                 statusId: 0,
-                parentId: 0,
-                amount: "0"
+                parentId: 0
             };
 
             scope.add = function(event) {

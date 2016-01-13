@@ -1,50 +1,75 @@
-<div class="transaction add">
+<md-content class="autoScroll transaction add">
     <form action="" name="transactionFormAdd" ng-submit="add($event)" class="transaction-form">
-        <md-input-container>
-            <label for="">Date</label>
-            <input ng-model="transaction.date">
-        </md-input-container>
+        <div layout-gt-sm="row">
+            <md-datepicker ng-model="transaction.date"
+                           placeholder="Enter Date"
+                           ng-required
+            ></md-datepicker>
 
-        <md-input-container>
-            <label for="">Description</label>
-            <input type="text" ng-model="transaction.description">
-        </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+                <label for="">Description</label>
+                <input type="text" ng-model="transaction.description"
+                       placeholder="Transaction description"
+                       ng-required
+                >
+            </md-input-container>
+        </div>
+        <div layout-gt-sm="row">
+            <md-input-container class="md-block" flex-gt-sm>
+                <label for="">Account</label>
+                <md-select ng-model="transaction.accountId">
+                    <md-option ng-repeat="account in accounts"
+                               ng-value="account.id"
+                               ng-bind="account.name"
+                    ></md-option>
+                </md-select>
+            </md-input-container>
 
-        <md-input-container>
-            <label for="">Account</label>
-            <md-select ng-model="transaction.accountId">
-                <md-option ng-repeat="account in accounts" ng-value="account.id" ng-bind="account.name"></md-option>
-            </md-select>
-        </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+                <label for="">Category</label>
+                <md-select ng-model="transaction.categoryId">
+                    <md-optgroup label="Income">
+                        <md-option ng-value="category.id"
+                                   ng-repeat="category in categories | filter: {parentId: 'Expense'}"
+                                   ng-bind="category.name"
+                        ></md-option>
+                    </md-optgroup>
+                    <md-optgroup label="Expenses">
+                        <md-option ng-value="category.id"
+                                   ng-repeat="category in categories | filter: {parentId: 'Income' }"
+                                   ng-bind="category.name"
+                        ></md-option>
+                    </md-optgroup>
+                </md-select>
+            </md-input-container>
 
-        <md-input-container>
-            <label for="">Category</label>
+            <md-input-container class="md-block" flex-gt-sm>
+                <label for="">Amount</label>
+                <input type="number"
+                       ng-model="transaction.amount"
+                       placeholder="0.00"
+                       step="0.01"
+                       ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/"
+                       ng-required
+                >
+            </md-input-container>
 
-            <md-select ng-model="transaction.categoryId">
-                <md-optgroup label="Income">
-                    <md-option ng-value="category.id" ng-repeat="category in categories | filter: {parentId: 'Expense'}" ng-bind="category.name"></md-option>
-                </md-optgroup>
-                <md-optgroup label="Expenses">
-                    <md-option ng-value="category.id" ng-repeat="category in categories | filter: {parentId: 'Income' }" ng-bind="category.name"></md-option>
-                </md-optgroup>
-            </md-select>
-        </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+                <label for="">Status</label>
+                <md-select ng-model="transaction.statusId">
+                    <md-option ng-repeat="s in status" ng-value="s.id" ng-bind="s.name"></md-option>
+                </md-select>
+            </md-input-container>
 
-        <md-input-container>
-            <label for="">Amount</label>
-            <input type="text" ng-model="transaction.amount">
-        </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+                <md-button class="md-raised md-primary" type="submit">
+                    Add Transaction
+                </md-button>
+                <span class="transaction-sync">
+                    <md-progress-circular md-mode="indeterminate" md-diameter="24px"></md-progress-circular>
+                </span>
+            </md-input-container>
 
-        <md-input-container>
-            <label for="">Status</label>
-            <md-select ng-model="transaction.statusId">
-                <md-option ng-repeat="s in status" ng-value="s.id" ng-bind="s.name"></md-option>
-            </md-select>
-        </md-input-container>
-
-        <md-button class="md-raised md-primary" type="submit">Add Transaction</md-button>
-        <span class="transaction-sync">
-            <i class="material-icons md-18">sync</i>
-        </span>
+        </div>
     </form>
-</div>
+</md-content>

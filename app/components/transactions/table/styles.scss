@@ -1,23 +1,25 @@
 .transactions.table {
+
   td {
     margin: 0;
     border-bottom: 1px solid #c0c0c0;
     padding: 1em;
+    min-width: 85px;
 
-    &.date {
-      min-width: 82px;
+    .transaction-data {
+      margin-top: 8px;
+      margin-left: 4px;
+      margin-bottom: 24px;
+      display: inline-block;
     }
 
-    &.content {
-      min-width: 100px;
+    md-input-container {
+      margin: 0;
     }
 
-    &.number {
-      min-width: 100px;
+    md-select {
+      margin: 0;
     }
 
-    input[type="text"] {
-      width: 100%;
-    }
   }
 }

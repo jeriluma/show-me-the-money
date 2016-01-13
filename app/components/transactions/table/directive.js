@@ -73,6 +73,14 @@ app.directive('transactionsTable', function() {
                 return defer.promise;
             }
 
+            $scope.transformDate = function(date) {
+                return new Date(date);
+            };
+
+            $scope.formatDate = function(date) {
+                return (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear();
+            }
+
         },
         link: function(scope, element, attrs, ctrl) {
             var deleteElement = $(element).find('.transactions.delete .transaction-delete');
