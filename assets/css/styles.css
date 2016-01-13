@@ -70,6 +70,14 @@ body {
 
 
 .transactions.table td {
-  padding: 1em;
   margin: 0;
-  border-bottom: 1px solid #c0c0c0; }
+  border-bottom: 1px solid #c0c0c0;
+  padding: 1em; }
+  .transactions.table td.date {
+    min-width: 82px; }
+  .transactions.table td.content {
+    min-width: 100px; }
+  .transactions.table td.number {
+    min-width: 100px; }
+  .transactions.table td input[type="text"] {
+    width: 100%; }

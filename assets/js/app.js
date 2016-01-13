@@ -1,4 +1,4 @@
-var app = angular.module('app', []);
+var app = angular.module('app', ['ngMaterial']);
 
 app.service('transactionsService', ['$http', '$q', function($http, $q){
     this.service = function (method, url, data) {
@@ -36,10 +36,10 @@ app.directive('transactionsAdd', function() {
             scope.transaction = {
                 date: "2016-01-03",
                 description: "",
-                accountId: 1,
+                accountId: 0,
                 categoryId: 0,
-                statusId: 1,
-                parentId: 1,
+                statusId: 0,
+                parentId: 0,
                 amount: "0"
             };
 
@@ -70,17 +70,6 @@ app.directive('transactionsAdd', function() {
 
                 return isValid;
             }
-        }
-    }
-});
-app.directive('transactionsSearch', function() {
-    return {
-        restrict: 'E',
-        replace: true,
-        templateUrl: 'app/components/transactions/search/view.html',
-        require: '?transactionsTable',
-        link: function(scope, element, attrs, transactionCtrl) {
-
         }
     }
 });
@@ -142,6 +131,17 @@ app.directive('transactionsEdit', function() {
         }
     }
 });
+app.directive('transactionsSearch', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'app/components/transactions/search/view.html',
+        require: '?transactionsTable',
+        link: function(scope, element, attrs, transactionCtrl) {
+
+        }
+    }
+});
 app.directive('transactionsTable', function() {
     return {
         restrict: 'E',
@@ -149,24 +149,27 @@ app.directive('transactionsTable', function() {
         templateUrl: 'app/components/transactions/table/view.html',
         controller: function($scope, transactionsService, $q) {
             $scope.loading = true;
+            transactionsServiceInit();
 
-            transactionsService.service('GET', 'categories').then(function(response){
-                $scope.categories = response;
-            });
+            function transactionsServiceInit() {
+                transactionsService.service('GET', 'categories').then(function(response){
+                    $scope.categories = response;
+                });
 
-            transactionsService.service('GET', 'status').then(function(response){
-                $scope.status = response;
-            });
+                transactionsService.service('GET', 'status').then(function(response){
+                    $scope.status = response;
+                });
 
-            transactionsService.service('GET', 'accounts').then(function(response){
-                $scope.accounts = response;
-            });
+                transactionsService.service('GET', 'accounts').then(function(response){
+                    $scope.accounts = response;
+                });
 
-            transactionsService.service('GET', 'transactions').then(function(response){
-                $scope.headers = ['ID', 'Date', 'Description', 'Account', 'Category', 'Amount', 'Balance', 'Status'];
-                $scope.transactions = response;
-                $scope.loading = false;
-            });
+                transactionsService.service('GET', 'transactions').then(function(response){
+                    $scope.headers = ['Date', 'Description', 'Account', 'Category', 'Amount', 'Balance', 'Status'];
+                    $scope.transactions = response;
+                    $scope.loading = false;
+                });
+            }
 
             this.add = function(transaction) {
                 return updateTransactions('POST', 'transactions/', transaction);
@@ -176,21 +179,8 @@ app.directive('transactionsTable', function() {
                 return updateTransactions('PUT', 'transactions/' + transaction.id, transaction);
             };
 
-            function updateTransactions(method, url, transaction) {
-                var defer = $q.defer();
-
-                transactionsService.service(method, url, transaction).then(function() {
-                    transactionsService.service('GET', 'transactions').then(function(response){
-                        $scope.transactions = response;
-                        defer.resolve();
-                    });
-                });
-
-                return defer.promise;
-            }
             var checkedIds = [];
             $scope.checked = function(transaction) {
-
                 if(checkedIds.indexOf(transaction.id) !== -1) {
                     checkedIds.splice(checkedIds.indexOf(transaction.id), 1);
                 } else {
@@ -214,6 +204,18 @@ app.directive('transactionsTable', function() {
                 return defer.promise;
             };
 
+            function updateTransactions(method, url, transaction) {
+                var defer = $q.defer();
+
+                transactionsService.service(method, url, transaction).then(function() {
+                    transactionsService.service('GET', 'transactions').then(function(response){
+                        $scope.transactions = response;
+                        defer.resolve();
+                    });
+                });
+
+                return defer.promise;
+            }
 
         },
         link: function(scope, element, attrs, ctrl) {

@@ -1,4 +1,4 @@
-var app = angular.module('app', []);
+var app = angular.module('app', ['ngMaterial']);
 
 app.service('transactionsService', ['$http', '$q', function($http, $q){
     this.service = function (method, url, data) {

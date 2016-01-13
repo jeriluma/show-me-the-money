@@ -62,12 +62,12 @@
       "id": 1,
       "date": "2016-01-01",
       "description": "asdf",
-      "accountId": 1,
+      "accountId": 0,
       "categoryId": 0,
-      "statusId": 3,
+      "statusId": 1,
       "parentId": null,
-      "amount": "2.55",
-      "balance": "2.59",
+      "amount": 2.55,
+      "balance": 2.59,
       "accountName": "Credit"
     },
     {
@@ -75,41 +75,41 @@
       "date": "2016-01-02",
       "description": "asdf",
       "accountId": 1,
-      "categoryId": 1,
-      "statusId": 2,
+      "categoryId": 0,
+      "statusId": 0,
       "parentId": 1,
       "amount": 10.25,
       "balance": 22.55
     },
     {
       "date": "2016-01-03",
-      "description": "asdfsd",
+      "description": 123,
+      "accountId": 1,
+      "categoryId": 0,
+      "statusId": 4,
+      "parentId": 1,
+      "amount": "0.90",
+      "id": 3
+    },
+    {
+      "date": "2016-01-03",
+      "description": "asdfsdf",
       "accountId": 1,
       "categoryId": 0,
       "statusId": 1,
       "parentId": 1,
       "amount": 0,
-      "id": 3
+      "id": 4
     },
     {
       "date": "2016-01-03",
-      "description": "asdfsd",
+      "description": "asdfsdf",
       "accountId": 1,
       "categoryId": 0,
       "statusId": 1,
       "parentId": 1,
       "amount": 0,
       "id": 5
-    },
-    {
-      "date": "2016-01-03",
-      "description": "asdfsd",
-      "accountId": 1,
-      "categoryId": 0,
-      "statusId": 1,
-      "parentId": 1,
-      "amount": 0,
-      "id": 6
     }
   ]
 }

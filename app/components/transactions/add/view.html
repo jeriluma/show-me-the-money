@@ -1,36 +1,48 @@
 <div class="transaction add">
     <form action="" name="transactionFormAdd" ng-submit="add($event)" class="transaction-form">
-        <label for="">Date</label>
+        <md-input-container>
+            <label for="">Date</label>
+            <input ng-model="transaction.date">
+        </md-input-container>
 
-        <label for="">Description</label>
-        <input type="text" ng-model="transaction.description">
+        <md-input-container>
+            <label for="">Description</label>
+            <input type="text" ng-model="transaction.description">
+        </md-input-container>
 
-        <label for="">Account</label>
-        <select
-            name="account" id=""
-            ng-model="transaction.accountId"
-            ng-options="account.id as account.name for account in accounts"
-        ></select>
+        <md-input-container>
+            <label for="">Account</label>
+            <md-select ng-model="transaction.accountId">
+                <md-option ng-repeat="account in accounts" ng-value="account.id" ng-bind="account.name"></md-option>
+            </md-select>
+        </md-input-container>
 
-        <label for="">Category</label>
-        <select
-            name="category" id=""
-            ng-model="transaction.categoryId"
-            ng-options="category.id as category.name group by category.parentId for category in categories"
-        ></select>
+        <md-input-container>
+            <label for="">Category</label>
 
-        <label for="">Amount</label>
-        <input type="text" ng-model="transaction.amount">
+            <md-select ng-model="transaction.categoryId">
+                <md-optgroup label="Income">
+                    <md-option ng-value="category.id" ng-repeat="category in categories | filter: {parentId: 'Expense'}" ng-bind="category.name"></md-option>
+                </md-optgroup>
+                <md-optgroup label="Expenses">
+                    <md-option ng-value="category.id" ng-repeat="category in categories | filter: {parentId: 'Income' }" ng-bind="category.name"></md-option>
+                </md-optgroup>
+            </md-select>
+        </md-input-container>
 
-        <label for="">Status</label>
-        <select
-            name="status" id=""
-            ng-model="transaction.statusId"
-            ng-options="s.id as s.name for s in status"
-            ng-change="save(transaction)"
-        ></select>
+        <md-input-container>
+            <label for="">Amount</label>
+            <input type="text" ng-model="transaction.amount">
+        </md-input-container>
 
-        <button type="submit">Add</button>
+        <md-input-container>
+            <label for="">Status</label>
+            <md-select ng-model="transaction.statusId">
+                <md-option ng-repeat="s in status" ng-value="s.id" ng-bind="s.name"></md-option>
+            </md-select>
+        </md-input-container>
+
+        <md-button class="md-raised md-primary" type="submit">Add Transaction</md-button>
         <span class="transaction-sync">
             <i class="material-icons md-18">sync</i>
         </span>

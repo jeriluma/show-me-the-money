@@ -14,10 +14,10 @@ app.directive('transactionsAdd', function() {
             scope.transaction = {
                 date: "2016-01-03",
                 description: "",
-                accountId: 1,
+                accountId: 0,
                 categoryId: 0,
-                statusId: 1,
-                parentId: 1,
+                statusId: 0,
+                parentId: 0,
                 amount: "0"
             };
 

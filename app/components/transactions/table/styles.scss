@@ -1,7 +1,23 @@
-.transactions.table{
-  td{
-    padding: 1em;
+.transactions.table {
+  td {
     margin: 0;
     border-bottom: 1px solid #c0c0c0;
+    padding: 1em;
+
+    &.date {
+      min-width: 82px;
+    }
+
+    &.content {
+      min-width: 100px;
+    }
+
+    &.number {
+      min-width: 100px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+    }
   }
 }

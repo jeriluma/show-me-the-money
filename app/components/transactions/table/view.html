@@ -22,14 +22,13 @@
         </thead>
         <tbody>
             <tr ng-repeat="transaction in transactions | orderBy: -transaction.date:true">
-                <td>
-                    <input class="transactions-check" type="checkbox" ng-click="checked(transaction)">
+                <td class="checkbox">
+                    <md-checkbox aria-label="Checkbox" ng-click="checked(transaction)"></md-checkbox>
                 </td>
-                <td>
-                    <span ng-bind="transaction.id"></span>
+                <td class="date">
+                    <span ng-bind="transaction.date"></span>
                 </td>
-                <td ng-bind="transaction.date"></td>
-                <td transactions-edit type="text">
+                <td transactions-edit type="text" class="content">
                     <span class="transaction-data">
                         <span ng-bind="transaction.description"></span>
                     </span>
@@ -49,12 +48,12 @@
                         <i class="material-icons md-18">sync</i>
                     </span>
                 </td>
-                <td transactions-edit type="select" style="width: 2000px" ng-init="oldTransaction = transaction">
+                <td transactions-edit class="content" type="select" ng-init="oldTransaction = transaction">
                     <span class="transaction-data">
                         <span ng-bind="accounts[transaction.accountId].name"></span>
                     </span>
                     <span class="transaction-edit-trigger">
-                        <i class="material-icons">arrow_drop_down</i>
+                        <i class="material-icons md-18">arrow_drop_down</i>
                     </span>
                     <span class="transaction-edit">
                         <form name="transactionFormAccount">
@@ -70,12 +69,12 @@
                         <i class="material-icons md-18">sync</i>
                     </span>
                 </td>
-                <td transactions-edit type="select">
+                <td transactions-edit type="select" class="content">
                     <span class="transaction-data">
                         <span ng-bind="categories[transaction.categoryId].name"></span>
                     </span>
                     <span class="transaction-edit-trigger">
-                        <i class="material-icons">arrow_drop_down</i>
+                        <i class="material-icons md-18">arrow_drop_down</i>
                     </span>
                     <span class="transaction-edit">
                         <form name="transactionFormCategory">
@@ -91,7 +90,7 @@
                         <i class="material-icons md-18">sync</i>
                     </span>
                 </td>
-                <td transactions-edit type="text">
+                <td transactions-edit type="text" class="number">
                     <span class="transaction-data">
                         <span ng-bind="'$' + transaction.amount"></span>
                     </span>
@@ -112,17 +111,17 @@
                         <i class="material-icons md-18">sync</i>
                     </span>
                 </td>
-                <td type="text">
+                <td type="text" class="number">
                     <span class="transaction-data">
                         <span ng-bind="'$' + transaction.balance"></span>
                     </span>
                 </td>
-                <td transactions-edit type="select">
+                <td transactions-edit type="select" class="content">
                     <span class="transaction-data">
                         <span ng-bind="status[transaction.statusId].name"></span>
                     </span>
                     <span class="transaction-edit-trigger">
-                        <i class="material-icons">arrow_drop_down</i>
+                        <i class="material-icons md-18">arrow_drop_down</i>
                     </span>
                     <span class="transaction-edit">
                         <form name="transactionFormStatus">
