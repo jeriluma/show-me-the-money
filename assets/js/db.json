@@ -59,24 +59,32 @@
   ],
   "transactions": [
     {
-      "date": "2016-01-13T19:35:02.534Z",
-      "description": "aasdf",
+      "date": "2016-01-14T22:19:11.843Z",
+      "description": "sdfsdf",
       "accountId": 0,
       "categoryId": 0,
       "statusId": 0,
       "parentId": 0,
-      "amount": 1,
-      "id": 1
+      "id": 44,
+      "amount": 19.06
     },
     {
-      "date": "2016-01-13T19:37:04.736Z",
-      "description": "asdfe",
+      "date": "2016-01-14T22:20:26.036Z",
+      "description": "sdfd",
       "accountId": 0,
       "categoryId": 0,
-      "statusId": 2,
+      "statusId": 0,
       "parentId": 0,
-      "id": 2,
-      "amount": 1.25
+      "id": 45
+    },
+    {
+      "date": "2016-01-14T22:34:07.125Z",
+      "description": "kkkk",
+      "accountId": 0,
+      "categoryId": 0,
+      "statusId": 0,
+      "parentId": 0,
+      "id": 46
     }
   ]
 }

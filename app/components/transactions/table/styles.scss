@@ -1,20 +1,68 @@
 .transactions.table {
+  table {
+    width: 100%;
+  }
+
+  tr {
+
+  }
 
   td {
     margin: 0;
     border-bottom: 1px solid #c0c0c0;
     padding: 1em;
-    min-width: 85px;
+
+    &.content {
+      min-width: 85px;
+    }
+
+    &.date {
+      min-width: 184px;
+    }
+
+    &.number {
+      min-width: 103px;
+    }
+
+    &.checkbox {
+      min-width: 0px;
+    }
+
+    &.description {
+      width: 100px;
+      overflow: hidden;
+    }
+
+    .transaction-data,
+    .transaction-sync {
+      //margin-top: 8px;
+      margin-left: 4px;
+      //margin-bottom: 24px;
+      display: inline-block;
+    }
 
     .transaction-data {
-      margin-top: 8px;
-      margin-left: 4px;
-      margin-bottom: 24px;
-      display: inline-block;
+
+    }
+
+    &.pointer:hover {
+      cursor: pointer;
+    }
+
+    .transaction-sync {
+      maring: 0 auto;
     }
 
     md-input-container {
       margin: 0;
+
+      input[type="text"] {
+        //width: 80px;
+      }
+
+      input[type="number"] {
+        width: 90px;
+      }
     }
 
     md-select {

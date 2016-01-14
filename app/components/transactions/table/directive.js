@@ -83,8 +83,8 @@ app.directive('transactionsTable', function() {
 
         },
         link: function(scope, element, attrs, ctrl) {
-            var deleteElement = $(element).find('.transactions.delete .transaction-delete');
-            var syncElement = $(element).find('.transactions.delete .transaction-sync');
+            var deleteElement = $(element).find('.transaction-delete');
+            var syncElement = $(element).find('.transaction-sync');
             syncElement.hide();
 
             scope.delete = function() {

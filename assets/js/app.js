@@ -31,29 +31,42 @@ app.directive('transactionsEdit', function() {
             var editingElement = $(element).find('.transaction-edit');
             var syncElement = $(element).find('.transaction-sync');
             var isEditing = false;
+            var isHover = false;
 
             editTrigger.hide();
             editingElement.hide();
             syncElement.hide();
 
             $(element).bind('mouseover', function() {
+                $(element).removeClass('pointer');
                 if(!isEditing) {
-                    editTrigger.fadeIn();
+                    $(element).addClass('pointer');
+                    editTrigger.fadeIn().promise().done(function() {
+                        isHover = true;
+                    });
                 }
             });
 
             $(element).bind('mouseleave', function() {
+                $(element).removeClass('pointer');
                 if(!isEditing) {
-                    editTrigger.fadeOut();
+                    $(element).addClass('pointer');
+                    editTrigger.fadeOut().promise().done(function() {
+                        isHover = false;
+                    });
                 }
             });
 
-            $(editTrigger).bind('click', function() {
-                data.fadeOut().promise().done(function() {
+            $(element).bind('click', function() {
+                if(isHover) {
                     isEditing = true;
-                    editingElement.fadeIn();
-                    editTrigger.hide();
-                });
+                    isHover = false;
+                    editTrigger.hide().promise().done(function() {
+                        data.fadeOut().promise().done(function() {
+                            editingElement.fadeIn();
+                        });
+                    });
+                }
             });
 
             scope.save = function(transaction, event) {
@@ -174,8 +187,8 @@ app.directive('transactionsTable', function() {
 
         },
         link: function(scope, element, attrs, ctrl) {
-            var deleteElement = $(element).find('.transactions.delete .transaction-delete');
-            var syncElement = $(element).find('.transactions.delete .transaction-sync');
+            var deleteElement = $(element).find('.transaction-delete');
+            var syncElement = $(element).find('.transaction-sync');
             syncElement.hide();
 
             scope.delete = function() {
@@ -202,6 +215,7 @@ app.directive('transactionsAdd', function() {
         link: function(scope, element, attrs, transactionCtrl) {
             var form = $(element).find('.transaction-form');
             var syncElement = $(element).find('.transaction-sync');
+            var button = $(element).find('.transaction-submit');
 
             syncElement.hide();
 
@@ -220,9 +234,13 @@ app.directive('transactionsAdd', function() {
                 event.preventDefault(); // prevents page refresh
 
                 if(valid()) {
-                    syncElement.fadeIn().promise().done(function() {
-                        transactionCtrl.add(scope.transaction).then(function() {
-                            syncElement.fadeOut();
+                    button.fadeOut().promise().done(function() {
+                        syncElement.fadeIn().promise().done(function() {
+                            transactionCtrl.add(scope.transaction).then(function() {
+                                syncElement.fadeOut().promise().done(function() {
+                                    button.fadeIn();
+                                });
+                            });
                         });
                     });
                 } else {

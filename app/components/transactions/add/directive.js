@@ -8,6 +8,7 @@ app.directive('transactionsAdd', function() {
         link: function(scope, element, attrs, transactionCtrl) {
             var form = $(element).find('.transaction-form');
             var syncElement = $(element).find('.transaction-sync');
+            var button = $(element).find('.transaction-submit');
 
             syncElement.hide();
 
@@ -26,9 +27,13 @@ app.directive('transactionsAdd', function() {
                 event.preventDefault(); // prevents page refresh
 
                 if(valid()) {
-                    syncElement.fadeIn().promise().done(function() {
-                        transactionCtrl.add(scope.transaction).then(function() {
-                            syncElement.fadeOut();
+                    button.fadeOut().promise().done(function() {
+                        syncElement.fadeIn().promise().done(function() {
+                            transactionCtrl.add(scope.transaction).then(function() {
+                                syncElement.fadeOut().promise().done(function() {
+                                    button.fadeIn();
+                                });
+                            });
                         });
                     });
                 } else {

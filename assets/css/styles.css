@@ -67,19 +67,68 @@ body {
 .material-icons.md-light.md-inactive {
   color: rgba(255, 255, 255, 0.3); }
 
+md-progress-circular.md-accent .md-inner .md-left .md-half-circle {
+  border-left-color: rgba(255, 255, 255, 0.87); }
 
+md-progress-circular.md-accent .md-inner .md-left .md-half-circle {
+  border-top-color: rgba(255, 255, 255, 0.87); }
+
+md-progress-circular.md-accent .md-inner .md-right .md-half-circle {
+  border-right-color: rgba(255, 255, 255, 0.87); }
+
+md-progress-circular.md-accent .md-inner .md-right .md-half-circle {
+  border-top-color: rgba(255, 255, 255, 0.87); }
+
+md-progress-circular.md-accent .md-inner .md-gap {
+  border-top-color: rgba(255, 255, 255, 0.87);
+  border-bottom-color: rgba(255, 255, 255, 0.87); }
+
+main {
+  margin: 0 auto;
+  width: 1280px;
+  padding: 1em; }
+
+.transaction.add {
+  margin-bottom: 1em; }
+  .transaction.add form {
+    padding: 1em; }
+  .transaction.add md-datepicker {
+    margin: 18px 0;
+    padding-right: 2px; }
+  .transaction.add .transaction-sync {
+    margin-right: 3em;
+    height: 48px; }
+
+
+.transactions.table table {
+  width: 100%; }
 
 .transactions.table td {
   margin: 0;
   border-bottom: 1px solid #c0c0c0;
-  padding: 1em;
-  min-width: 85px; }
-  .transactions.table td .transaction-data {
-    margin-top: 8px;
+  padding: 1em; }
+  .transactions.table td.content {
+    min-width: 85px; }
+  .transactions.table td.date {
+    min-width: 184px; }
+  .transactions.table td.number {
+    min-width: 103px; }
+  .transactions.table td.checkbox {
+    min-width: 0px; }
+  .transactions.table td.description {
+    width: 100px;
+    overflow: hidden; }
+  .transactions.table td .transaction-data,
+  .transactions.table td .transaction-sync {
     margin-left: 4px;
-    margin-bottom: 24px;
     display: inline-block; }
+  .transactions.table td.pointer:hover {
+    cursor: pointer; }
+  .transactions.table td .transaction-sync {
+    maring: 0 auto; }
   .transactions.table td md-input-container {
     margin: 0; }
+    .transactions.table td md-input-container input[type="number"] {
+      width: 90px; }
   .transactions.table td md-select {
     margin: 0; }

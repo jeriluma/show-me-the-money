@@ -1,3 +1,17 @@
 .transaction.add {
+  form {
+    padding: 1em;
+  }
 
+  md-datepicker {
+    margin: 18px 0;
+    padding-right: 2px;
+  }
+
+  margin-bottom: 1em;
+
+  .transaction-sync {
+    margin-right: 3em;
+    height: 48px;
+  }
 }

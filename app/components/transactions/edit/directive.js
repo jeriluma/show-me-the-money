@@ -9,29 +9,42 @@ app.directive('transactionsEdit', function() {
             var editingElement = $(element).find('.transaction-edit');
             var syncElement = $(element).find('.transaction-sync');
             var isEditing = false;
+            var isHover = false;
 
             editTrigger.hide();
             editingElement.hide();
             syncElement.hide();
 
             $(element).bind('mouseover', function() {
+                $(element).removeClass('pointer');
                 if(!isEditing) {
-                    editTrigger.fadeIn();
+                    $(element).addClass('pointer');
+                    editTrigger.fadeIn().promise().done(function() {
+                        isHover = true;
+                    });
                 }
             });
 
             $(element).bind('mouseleave', function() {
+                $(element).removeClass('pointer');
                 if(!isEditing) {
-                    editTrigger.fadeOut();
+                    $(element).addClass('pointer');
+                    editTrigger.fadeOut().promise().done(function() {
+                        isHover = false;
+                    });
                 }
             });
 
-            $(editTrigger).bind('click', function() {
-                data.fadeOut().promise().done(function() {
+            $(element).bind('click', function() {
+                if(isHover) {
                     isEditing = true;
-                    editingElement.fadeIn();
-                    editTrigger.hide();
-                });
+                    isHover = false;
+                    editTrigger.hide().promise().done(function() {
+                        data.fadeOut().promise().done(function() {
+                            editingElement.fadeIn();
+                        });
+                    });
+                }
             });
 
             scope.save = function(transaction, event) {
