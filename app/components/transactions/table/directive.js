@@ -44,6 +44,10 @@ app.directive('transactionsTable', function() {
                 }
             };
 
+            this.hasCheckedIds = function() {
+                return checkedIds.length > 0
+            };
+
             this.delete = function() {
                 var defer = $q.defer();
                 var promises  = [];
@@ -88,15 +92,17 @@ app.directive('transactionsTable', function() {
             syncElement.hide();
 
             scope.delete = function() {
-                deleteElement.fadeOut().promise().done(function() {
-                    syncElement.fadeIn().promise().done(function() {
-                        ctrl.delete().then(function() {
-                            syncElement.fadeOut().promise().done(function(){
-                                deleteElement.fadeIn();
+                if(ctrl.hasCheckedIds()) {
+                    deleteElement.fadeOut().promise().done(function() {
+                        syncElement.fadeIn().promise().done(function() {
+                            ctrl.delete().then(function() {
+                                syncElement.fadeOut().promise().done(function(){
+                                    deleteElement.fadeIn();
+                                });
                             });
                         });
                     });
-                });
+                }
             }
         }
     }

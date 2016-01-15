@@ -1,4 +1,5 @@
 .transactions.table {
+
   table {
     width: 100%;
   }
@@ -13,19 +14,22 @@
     padding: 1em;
 
     &.content {
-      min-width: 85px;
+      //min-width: 85px;
     }
 
     &.date {
-      min-width: 184px;
+      //min-width: 184px;
+      //min-width: 100px;
+
     }
 
     &.number {
-      min-width: 103px;
+      //min-width: 103px;
+      //min-width: 85px;
     }
 
     &.checkbox {
-      min-width: 0px;
+      //min-width: 0px;
     }
 
     &.description {

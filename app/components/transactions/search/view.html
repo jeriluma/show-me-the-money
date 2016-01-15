@@ -1,4 +1,85 @@
-<div class="transaction search">
-    hello world
-    <input type="search" name="googlesearch">
+<div class="transactions search">
+    <!--<md-subheader class="md-primary">Search</md-subheader>-->
+    <!--<md-content>-->
+        <form action="" name="searchTransactionsForm" ng-submit="searchTransactionsForm.$valid && search($event)">
+            <div layout-gt-xs="row">
+                <div class="md-block" flex-gt-xs layout="row">
+                    <div flex>
+                        <label for="" class="date-label">Start Date</label>
+                        <md-datepicker ng-model="transaction.date.start"
+                                       placeholder="Enter Date"
+                                       ng-required
+                                ></md-datepicker>
+                    </div>
+
+                    <div flex>
+                        <label for="" class="date-label">Description</label>
+                        <md-datepicker ng-model="transaction.date.end"
+                                       placeholder="Enter Date"
+                                       ng-required
+                                ></md-datepicker>
+                    </div>
+                </div>
+                <md-input-container class="md-block" flex-gt-xs>
+                    <label for="">Description</label>
+                    <input type="text" ng-model="transaction.description"
+                           placeholder="Transaction description"
+                           ng-required
+                            >
+                </md-input-container>
+            </div>
+
+            <div layout-gt-xs="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label for="">Account</label>
+                    <md-select ng-model="transaction.accountId">
+                        <md-option ng-repeat="account in accounts"
+                                   ng-value="account.id"
+                                   ng-bind="account.name"
+                                ></md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label for="">Category</label>
+                    <md-select ng-model="transaction.categoryId">
+                        <md-optgroup label="Income">
+                            <md-option ng-value="category.id"
+                                       ng-repeat="category in categories | filter: {parentId: 'Expense'}"
+                                       ng-bind="category.name"
+                                    ></md-option>
+                        </md-optgroup>
+                        <md-optgroup label="Expenses">
+                            <md-option ng-value="category.id"
+                                       ng-repeat="category in categories | filter: {parentId: 'Income' }"
+                                       ng-bind="category.name"
+                                    ></md-option>
+                        </md-optgroup>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label for="">Status</label>
+                    <md-select ng-model="transaction.statusId">
+                        <md-option ng-repeat="s in status" ng-value="s.id" ng-bind="s.name"></md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div layout="row" layout-align="end end">
+                <span class="transaction-submit">
+                    <md-button class="md-raised md-primary" type="submit">
+                        Search
+                    </md-button>
+                </span>
+                <span class="transaction-sync">
+                    <md-progress-circular
+                            md-mode="indeterminate"
+                            md-diameter="24px">
+                    </md-progress-circular>
+                </span>
+            </div>
+        </form>
+    <!--</md-content>-->
+
+    <md-divider ng-if="!$last"></md-divider>
 </div>

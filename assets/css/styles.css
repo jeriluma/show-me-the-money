@@ -85,20 +85,7 @@ md-progress-circular.md-accent .md-inner .md-gap {
 
 main {
   margin: 0 auto;
-  width: 1280px;
-  padding: 1em; }
-
-.transaction.add {
-  margin-bottom: 1em; }
-  .transaction.add form {
-    padding: 1em; }
-  .transaction.add md-datepicker {
-    margin: 18px 0;
-    padding-right: 2px; }
-  .transaction.add .transaction-sync {
-    margin-right: 3em;
-    height: 48px; }
-
+  max-width: 1280px; }
 
 .transactions.table table {
   width: 100%; }
@@ -107,14 +94,6 @@ main {
   margin: 0;
   border-bottom: 1px solid #c0c0c0;
   padding: 1em; }
-  .transactions.table td.content {
-    min-width: 85px; }
-  .transactions.table td.date {
-    min-width: 184px; }
-  .transactions.table td.number {
-    min-width: 103px; }
-  .transactions.table td.checkbox {
-    min-width: 0px; }
   .transactions.table td.description {
     width: 100px;
     overflow: hidden; }
@@ -132,3 +111,28 @@ main {
       width: 90px; }
   .transactions.table td md-select {
     margin: 0; }
+
+.transactions.search {
+  margin-bottom: 1em; }
+  .transactions.search form {
+    padding: 1em; }
+  .transactions.search md-datepicker {
+    margin: 18px 0;
+    padding-right: 2px; }
+    .transactions.search md-datepicker button {
+      padding-top: 0; }
+  .transactions.search .date-label {
+    color: rgba(0, 0, 0, 0.26);
+    display: block;
+    margin-top: 6px; }
+
+.transaction.add {
+  margin-bottom: 1em; }
+  .transaction.add form {
+    padding: 1em; }
+  .transaction.add md-datepicker {
+    margin: 18px 0;
+    padding-right: 2px; }
+  .transaction.add .transaction-sync {
+    margin-right: 3em;
+    height: 48px; }
