@@ -3,7 +3,7 @@ app.directive('transactionsTable', function() {
         restrict: 'E',
         replace: true,
         templateUrl: 'app/components/transactions/table/view.html',
-        controller: function($scope, transactionsService, $q, $filter, $timeout) {
+        controller: function($scope, transactionsService, $q, $filter) {
 
             // Initialization
 

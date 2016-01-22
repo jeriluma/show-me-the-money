@@ -1,0 +1,28 @@
+
+
+<div class="transaction summary md-whiteframe-2dp" >
+    <md-content>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>
+                    <span>Summary</span>
+                </h2>
+            </div>
+        </md-toolbar>
+    </md-content>
+
+    <md-content class="content" layout-sm="column" layout-xs="column" layout="row" layout-padding>
+        <div flex-xs="100" flex-sm="100" flex="33">
+            <h3>Overall</h3>
+            <p ng-bind="balance.overall"></p>
+        </div>
+        <div flex-xs="100" flex-sm="100" flex="33">
+            <h3>Debit</h3>
+            <p ng-bind="balance.debit"></p>
+        </div>
+        <div flex-xs="100" flex-sm="100" flex="33">
+            <h3>Credit</h3>
+            <p ng-bind="balance.credit"></p>
+        </div>
+    </md-content>
+</div>
