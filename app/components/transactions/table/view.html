@@ -50,7 +50,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="transaction in transactions | orderBy: transaction.date">
+                        <tr ng-repeat="transaction in transactions"
+                            ng-init="transaction.date = transformDate(transaction.date)">
                             <td class="checkbox">
                                 <md-checkbox
                                         aria-label="Checkbox"
@@ -58,8 +59,7 @@
                                         ng-click="checked(transaction)">
                                 </md-checkbox>
                             </td>
-                            <td transactions-edit class="date"
-                                ng-init="transaction.date = transformDate(transaction.date)">
+                            <td transactions-edit class="date">
                                 <span class="transaction-data">
                                     <span ng-bind="formatDate(transaction.date)"></span>
                                 </span>

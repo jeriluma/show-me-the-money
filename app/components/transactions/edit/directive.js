@@ -8,8 +8,8 @@ app.directive('transactionsEdit', function() {
             var editTrigger = $(element).find('.transaction-edit-trigger');
             var editingElement = $(element).find('.transaction-edit');
             var syncElement = $(element).find('.transaction-sync');
-            var isEditing = false;
             var isHover = false;
+            var isEditing = false;
 
             editTrigger.hide();
             editingElement.hide();

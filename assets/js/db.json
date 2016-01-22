@@ -3,89 +3,99 @@
     {
       "id": 0,
       "name": "Debit",
-      "description": "Debit"
+      "bank_description": "Debit",
+      "accountNumber": "xxxx-xxxx-xxxx-1234"
     },
     {
       "id": 1,
       "name": "Credit",
-      "description": "Credit"
+      "bank_description": "Credit",
+      "accountNumber": "xxxx-xxxx-xxxx-2345"
     }
   ],
   "categories": [
     {
       "id": 0,
       "name": "Bills",
-      "description": "",
       "parentId": "Expense"
     },
     {
       "id": 1,
       "name": "Salary",
-      "description": "",
       "parentId": "Income"
     }
   ],
   "status": [
     {
       "id": 0,
-      "name": "Draft",
-      "description": "Transactions that have not been official."
+      "name": "Draft"
     },
     {
       "id": 1,
-      "name": "Pending",
-      "description": "Transactions that have not been resolved."
+      "name": "Pending"
     },
     {
       "id": 2,
-      "name": "Unpaid",
-      "description": "Transactions that have not been paid off."
+      "name": "Paid"
     },
     {
       "id": 3,
-      "name": "Paid",
-      "description": "Transactions that have been paid off."
-    },
-    {
-      "id": 4,
-      "name": "Overdue",
-      "description": "Transactions that have not been paid off and past due date."
-    },
-    {
-      "id": 5,
-      "name": "Partial",
-      "description": "Transactions that have not been fully paid off."
+      "name": "Unpaid"
     }
   ],
   "transactions": [
     {
-      "date": "2016-01-11T08:00:00.000Z",
-      "description": "asdfsdf",
+      "id": 1,
+      "date": "2016-01-04T00:00:00.000Z",
+      "bank_descriptions": "transaction #1",
+      "description": "transaction #1",
       "accountId": 0,
-      "categoryId": 0,
+      "categoryId": 1,
       "statusId": 0,
-      "parentId": 0,
-      "amount": 15.55,
-      "id": 47
+      "amount": 1
     },
     {
-      "date": "2016-01-15T17:11:23.934Z",
-      "description": "asdfsdf",
-      "accountId": 0,
-      "categoryId": 0,
+      "id": 2,
+      "date": "2016-01-04T08:00:00.000Z",
+      "bank_descriptions": "transaction #1",
+      "description": "transaction #2",
+      "accountId": 1,
+      "categoryId": 1,
       "statusId": 0,
-      "parentId": 0,
-      "amount": 15.55,
-      "id": 48
+      "amount": 3,
+      "balance": 4
     },
     {
-      "date": "2016-01-15T20:05:06.060Z",
-      "description": "gsfdfd",
+      "id": 3,
+      "date": "2016-01-06T00:00:00.000Z",
+      "bank_descriptions": "transaction #1",
+      "description": "transaction #2",
+      "accountId": 0,
+      "categoryId": 0,
+      "statusId": 2,
+      "amount": 2,
+      "balance": 2
+    },
+    {
+      "id": 4,
+      "date": "2016-01-07T00:00:00.000Z",
+      "bank_descriptions": "transaction #1",
+      "description": "transaction #2",
+      "accountId": 1,
+      "categoryId": 0,
+      "statusId": 2,
+      "amount": 2,
+      "balance": 0
+    },
+    {
+      "date": "2016-01-22T17:50:30.131Z",
+      "description": ":D",
       "accountId": 0,
       "categoryId": 0,
       "statusId": 0,
       "parentId": 0,
-      "id": 49
+      "amount": 3,
+      "id": 5
     }
   ]
 }

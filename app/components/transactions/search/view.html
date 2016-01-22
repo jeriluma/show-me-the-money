@@ -8,12 +8,11 @@
                         <label for="" class="date-label">Start Date</label>
                         <md-datepicker ng-model="transaction.date.start"
                                        placeholder="Enter Date"
-                                       ng-required
                                 ></md-datepicker>
                     </div>
 
                     <div flex>
-                        <label for="" class="date-label">Description</label>
+                        <label for="" class="date-label">End Date</label>
                         <md-datepicker ng-model="transaction.date.end"
                                        placeholder="Enter Date"
                                        ng-required
@@ -66,7 +65,7 @@
                 </md-input-container>
             </div>
             <div layout="row" layout-align="end end">
-                <span class="transaction-submit">
+                <span class="transaction-search-element">
                     <md-button class="md-raised md-primary" type="submit">
                         Search
                     </md-button>
