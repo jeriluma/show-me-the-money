@@ -14,14 +14,38 @@
 
     <main>
         <section>
-            <transactions-summary></transactions-summary>
-        </section>
-        <section>
-            <transactions-table></transactions-table>
+            <div ng-cloak>
+                <md-content>
+                    <md-tabs md-dynamic-height md-border-bottom>
+                        <md-tab label="Dashboard">
+                            <md-content class="md-padding">
+                                <h1 class="md-display-2">Dashboard</h1>
+                                <!--<transactions-summary></transactions-summary>-->
+                                Health Chart <br>
+                                Account Balances<br>
+                                Credit Pending/Unpaid Transactions<br>
+                                Draft Transactions<br>
+                            </md-content>
+                        </md-tab>
+                        <md-tab label="Transactions">
+                            <md-content class="md-padding">
+                                <h1 class="md-display-2">Transactions</h1>
+                                <transactions-transactions></transactions-transactions>
+                            </md-content>
+                        </md-tab>
+                        <md-tab label="Search">
+                            <md-content class="md-padding">
+                                <h1 class="md-display-2">Search</h1>
+                                <transactions-search></transactions-search>
+                            </md-content>
+                        </md-tab>
+                    </md-tabs>
+                </md-content>
+            </div>
         </section>
     </main>
 
-    <footer flex></footer>
+    <footer></footer>
 
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/angular/angular.min.js"></script>

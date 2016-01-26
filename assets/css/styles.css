@@ -87,33 +87,35 @@ main {
   margin: 0 auto;
   max-width: 1280px; }
 
-.transaction.add {
-  margin-bottom: 1em; }
-  .transaction.add form {
-    padding: 1em; }
-  .transaction.add md-datepicker {
-    margin: 18px 0;
-    padding-right: 2px; }
-  .transaction.add .transaction-sync {
-    margin-right: 3em;
-    height: 48px; }
+.transactions, .transaction {
+  margin: 1em; }
 
-.transactions.search {
-  margin-bottom: 1em; }
-  .transactions.search form {
-    padding: 1em; }
-  .transactions.search md-datepicker {
-    margin: 18px 0;
-    padding-right: 2px; }
-    .transactions.search md-datepicker button {
-      padding-top: 0; }
-  .transactions.search .date-label {
-    color: rgba(0, 0, 0, 0.26);
-    display: block;
-    margin-top: 6px; }
+.transaction.add form {
+  padding: 1em; }
 
-.transaction.summary {
-  margin: 1em 1em 0 1em; }
+.transaction.add md-datepicker {
+  margin: 18px 0;
+  padding-right: 2px; }
+
+.transaction.add .transaction-sync {
+  margin-right: 3em;
+  height: 48px; }
+
+.transactions.search form {
+  padding: 1em; }
+
+.transactions.search md-datepicker {
+  margin: 18px 0;
+  padding-right: 2px; }
+  .transactions.search md-datepicker button {
+    padding-top: 0; }
+
+.transactions.search .date-label {
+  color: rgba(0, 0, 0, 0.26);
+  display: block;
+  margin-top: 6px; }
+
+
 
 .transactions.table table {
   width: 100%; }

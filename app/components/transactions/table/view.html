@@ -1,239 +1,194 @@
-<div class="transactions table" layout-sm="column" layout-xs="column" layout="row" layout-padding>
+<md-content class="transactions table">
+    <section>
+        <table>
+            <thead>
+            <tr>
+                <td ng-repeat="header in headers" ng-bind="header"></td>
+                <td></td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="transaction in transactions"
+                ng-init="transaction.date = transformDate(transaction.date)">
+                <td transactions-edit>
+                    <span class="transaction-data">
+                        <span ng-bind="transaction.date | date:'M/d/yyyy'"></span>
+                    </span>
+                    <div layout-gt-sm="row" class="transaction-edit">
+                        <md-datepicker ng-model="transaction.date"
+                                       placeholder="Enter Date"
+                                       ng-required
+                                       ng-change="save(transaction)">
+                        </md-datepicker>
+                    </div>
+                    <span class="transaction-edit-trigger">
+                        <i class="material-icons md-18">mode_edit</i>
+                    </span>
+                    <span class="transaction-sync">
+                        <md-progress-circular md-mode="indeterminate" md-diameter="24px">
+                        </md-progress-circular>
+                    </span>
+                </td>
+                <td transactions-edit>
+                    <span class="transaction-data">
+                        <span ng-bind="transaction.description"></span>
+                    </span>
+                    <span class="transaction-edit-trigger">
+                        <i class="material-icons md-18">mode_edit</i>
+                    </span>
 
-    <!--<div class="md-whiteframe-2dp">-->
-        <!--<span ng-show="loading" class="transaction-sync">-->
-            <!--<md-progress-circular md-mode="indeterminate"-->
-                                  <!--md-diameter="24px">-->
-            <!--</md-progress-circular>-->
-        <!--</span>-->
-    <!--</div>-->
+                    <span class="transaction-edit">
+                        <form name="transactionFormDescription"
+                              action=""
+                              name="transactionFormDescription"
+                              ng-submit="transactionFormDescription.$valid && save(transaction, $event)"
+                                >
+                            <md-input-container>
 
-    <div flex-xs="100" flex-sm="100" flex="33">
-        <transactions-add></transactions-add>
-    </div>
+                                <input type="text" ng-model="transaction.description"
+                                       aria-label="Description"
+                                       ng-required
+                                        >
+                            </md-input-container>
+                        </form>
+                    </span>
 
-    <div flex-xs="100" flex-sm="100" flex="66">
-        <div class="md-whiteframe-2dp">
-            <md-toolbar>
-                <div class="md-toolbar-tools">
-                    <h2>
-                        <span>Transactions</span>
-                    </h2>
-                    <span flex></span>
-                    <md-button class="md-icon-button"
-                               aria-label="Favorite"
-                               ng-click="delete()">
-                <span class="transaction-delete">
-                    <i class="material-icons md-18">delete</i>
-                </span>
-                <span class="transaction-sync">
-                    <md-progress-circular class="md-accent"
-                                          md-mode="indeterminate"
-                                          md-diameter="24px">
-                    </md-progress-circular>
-                </span>
-                    </md-button>
-                </div>
-            </md-toolbar>
+                    <span class="transaction-sync">
+                        <md-progress-circular md-mode="indeterminate" md-diameter="24px">
+                        </md-progress-circular>
+                    </span>
+                </td>
+                <td transactions-edit>
+                    <span class="transaction-data">
+                        <span ng-bind="accounts[transaction.accountId].name"></span>
+                    </span>
+                    <span class="transaction-edit-trigger">
+                        <i class="material-icons md-18">mode_edit</i>
+                    </span>
+                    <span class="transaction-edit">
+                        <form name="transactionFormAccount">
+                            <md-input-container>
+                                <md-select ng-model="transaction.accountId"
+                                           aria-label="Account"
+                                           ng-change="save(transaction)"
+                                        >
+                                    <md-option ng-repeat="account in accounts"
+                                               ng-value="account.id"
+                                               ng-bind="account.name"
+                                            ></md-option>
+                                </md-select>
+                                <div class="md-errors-spacer"></div>
+                            </md-input-container>
+                        </form>
+                    </span>
+                    <span class="transaction-sync">
+                        <md-progress-circular md-mode="indeterminate" md-diameter="24px">
+                        </md-progress-circular>
+                    </span>
+                </td>
+                <td transactions-edit >
+                    <span class="transaction-data">
+                        <span ng-bind="categories[transaction.categoryId].name"></span>
+                    </span>
+                    <span class="transaction-edit-trigger">
+                        <i class="material-icons md-18">mode_edit</i>
+                    </span>
+                    <span class="transaction-edit">
+                        <form name="transactionFormCategory">
+                            <md-input-container>
+                                <md-select ng-model="transaction.categoryId"
+                                           aria-label="Category"
+                                           ng-change="save(transaction)">
+                                    <md-optgroup label="Income">
+                                        <md-option ng-value="category.id"
+                                                   ng-repeat="category in categories | filter: {parentId: 'Expense'}"
+                                                   ng-bind="category.name"
+                                                ></md-option>
+                                    </md-optgroup>
+                                    <md-optgroup label="Expenses">
+                                        <md-option ng-value="category.id"
+                                                   ng-repeat="category in categories | filter: {parentId: 'Income' }"
+                                                   ng-bind="category.name"
+                                                ></md-option>
+                                    </md-optgroup>
+                                </md-select>
+                                <div class="md-errors-spacer"></div>
+                            </md-input-container>
+                        </form>
+                    </span>
+                    <span class="transaction-sync">
+                        <md-progress-circular md-mode="indeterminate" md-diameter="24px">
+                        </md-progress-circular>
+                    </span>
+                </td>
+                <td transactions-edit>
+                    <span class="transaction-data">
+                        <span ng-bind="transaction.amount | currency:'$'"></span>
+                    </span>
+                    <span class="transaction-edit-trigger">
+                        <i class="material-icons md-18">mode_edit</i>
+                    </span>
+                    <span class="transaction-edit">
+                        <form name="transactionFormAmount"
+                              action=""
+                              name="transactionForm"
+                              ng-submit="transactionFormAmount.$valid && save(transaction, $event)"
+                                >
+                            <md-input-container>
+                                <input type="number"
+                                       aria-label="Amount"
+                                       ng-model="transaction.amount"
+                                       step="0.01"
+                                       ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/"
+                                       ng-required
+                                        >
+                            </md-input-container>
+                        </form>
+                    </span>
+                    <span class="transaction-sync">
+                        <md-progress-circular md-mode="indeterminate" md-diameter="24px">
+                        </md-progress-circular>
+                    </span>
+                </td>
+                <td transactions-edit="">
+                    <span class="transaction-data">
+                        <span ng-bind="transaction.balance | currency:'$'"></span>
+                    </span>
+                </td>
+                <td transactions-edit >
+                    <span class="transaction-data">
+                        <span ng-bind="status[transaction.statusId].name"></span>
+                    </span>
+                    <span class="transaction-edit-trigger">
+                        <i class="material-icons md-18">mode_edit</i>
+                    </span>
 
-            <md-content>
-                <section>
-                    <transactions-search></transactions-search>
-                </section>
-                <section>
-                    <!--<md-subheader class="md-primary">Transactions</md-subheader>-->
-                    <table ng-show="!loading">
-                        <thead>
-                        <tr>
-                            <td></td>
-                            <td ng-repeat="header in headers" ng-bind="header"></td>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="transaction in transactions"
-                            ng-init="transaction.date = transformDate(transaction.date)">
-                            <td class="checkbox">
-                                <md-checkbox
-                                        aria-label="Checkbox"
-                                        class="md-primary"
-                                        ng-click="checked(transaction)">
-                                </md-checkbox>
-                            </td>
-                            <td transactions-edit class="date">
-                                <span class="transaction-data">
-                                    <span ng-bind="formatDate(transaction.date)"></span>
-                                </span>
-                                <div layout-gt-sm="row" class="transaction-edit">
-                                    <md-datepicker ng-model="transaction.date"
-                                                   placeholder="Enter Date"
-                                                   ng-required
-                                                   ng-change="save(transaction)">
-                                    </md-datepicker>
-                                </div>
-                                <span class="transaction-edit-trigger">
-                                    <i class="material-icons md-18">mode_edit</i>
-                                </span>
-                            </td>
-                            <td transactions-edit type="text" class="description">
-                                <span class="transaction-data">
-                                    <span ng-bind="transaction.description"></span>
-                                </span>
-                                <span class="transaction-edit-trigger">
-                                    <i class="material-icons md-18">mode_edit</i>
-                                </span>
+                    <form name="transactionFormStatus" class="transaction-edit">
+                        <md-input-container>
+                            <md-select ng-model="transaction.statusId"
+                                       aria-label="Status"
+                                       ng-change="save(transaction)">
+                                <md-option ng-repeat="s in status"
+                                           ng-value="s.id"
+                                           ng-bind="s.name">
+                                </md-option>
+                            </md-select>
+                            <div class="md-errors-spacer"></div>
+                        </md-input-container>
+                    </form>
 
-                                <span class="transaction-edit">
-                                    <form name="transactionFormDescription"
-                                          action=""
-                                          name="transactionFormDescription"
-                                          ng-submit="transactionFormDescription.$valid && save(transaction, $event)"
-                                            >
-                                        <md-input-container>
-
-                                            <input type="text" ng-model="transaction.description"
-                                                   aria-label="Description"
-                                                   ng-required
-                                                    >
-                                        </md-input-container>
-                                    </form>
-                                </span>
-
-                                <span class="transaction-sync">
-                                    <md-progress-circular md-mode="indeterminate" md-diameter="24px">
-                                    </md-progress-circular>
-                                </span>
-                            </td>
-                            <td transactions-edit class="content"
-                                type="select"
-                                ng-init="oldTransaction = transaction">
-                                <span class="transaction-data">
-                                    <span ng-bind="accounts[transaction.accountId].name"></span>
-                                </span>
-                                <span class="transaction-edit-trigger">
-                                    <i class="material-icons md-18">mode_edit</i>
-                                </span>
-                                <span class="transaction-edit">
-                                    <form name="transactionFormAccount">
-                                        <md-input-container>
-                                            <md-select ng-model="transaction.accountId"
-                                                       aria-label="Account"
-                                                       ng-change="save(transaction)"
-                                                    >
-                                                <md-option ng-repeat="account in accounts"
-                                                           ng-value="account.id"
-                                                           ng-bind="account.name"
-                                                        ></md-option>
-                                            </md-select>
-                                            <div class="md-errors-spacer"></div>
-                                        </md-input-container>
-                                    </form>
-                                </span>
-                                <span class="transaction-sync">
-                                    <md-progress-circular md-mode="indeterminate" md-diameter="24px">
-                                    </md-progress-circular>
-                                </span>
-                            </td>
-                            <td transactions-edit type="select" class="content">
-                                <span class="transaction-data">
-                                    <span ng-bind="categories[transaction.categoryId].name"></span>
-                                </span>
-                                <span class="transaction-edit-trigger">
-                                    <i class="material-icons md-18">mode_edit</i>
-                                </span>
-                                <span class="transaction-edit">
-                                    <form name="transactionFormCategory">
-                                        <md-input-container>
-                                            <md-select ng-model="transaction.categoryId"
-                                                       aria-label="Category"
-                                                       ng-change="save(transaction)">
-                                                <md-optgroup label="Income">
-                                                    <md-option ng-value="category.id"
-                                                               ng-repeat="category in categories | filter: {parentId: 'Expense'}"
-                                                               ng-bind="category.name"
-                                                            ></md-option>
-                                                </md-optgroup>
-                                                <md-optgroup label="Expenses">
-                                                    <md-option ng-value="category.id"
-                                                               ng-repeat="category in categories | filter: {parentId: 'Income' }"
-                                                               ng-bind="category.name"
-                                                            ></md-option>
-                                                </md-optgroup>
-                                            </md-select>
-                                            <div class="md-errors-spacer"></div>
-                                        </md-input-container>
-                                    </form>
-                                </span>
-                                <span class="transaction-sync">
-                                    <md-progress-circular md-mode="indeterminate" md-diameter="24px">
-                                    </md-progress-circular>
-                                </span>
-                            </td>
-                            <td transactions-edit type="text" class="number">
-                                <span class="transaction-data">
-                                    <span ng-bind="'$' + transaction.amount"></span>
-                                </span>
-                                <span class="transaction-edit-trigger">
-                                    <i class="material-icons md-18">mode_edit</i>
-                                </span>
-                                <span class="transaction-edit">
-                                    <form name="transactionFormAmount"
-                                          action=""
-                                          name="transactionForm"
-                                          ng-submit="transactionFormAmount.$valid && save(transaction, $event)"
-                                            >
-                                        <md-input-container>
-                                            <input type="number"
-                                                   aria-label="Amount"
-                                                   ng-model="transaction.amount"
-                                                   step="0.01"
-                                                   ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/"
-                                                   ng-required
-                                                    >
-                                        </md-input-container>
-                                    </form>
-                                </span>
-                                <span class="transaction-sync">
-                                    <md-progress-circular md-mode="indeterminate" md-diameter="24px">
-                                    </md-progress-circular>
-                                </span>
-                            </td>
-                            <td type="text" class="number">
-                                <span class="transaction-data">
-                                    <span ng-bind="'$' + transaction.balance"></span>
-                                </span>
-                            </td>
-                            <td transactions-edit type="select" class="content">
-                                <span class="transaction-data">
-                                    <span ng-bind="status[transaction.statusId].name"></span>
-                                </span>
-                                <span class="transaction-edit-trigger">
-                                    <i class="material-icons md-18">mode_edit</i>
-                                </span>
-
-                                <form name="transactionFormStatus" class="transaction-edit">
-                                    <md-input-container>
-                                        <md-select ng-model="transaction.statusId"
-                                                   aria-label="Status"
-                                                   ng-change="save(transaction)">
-                                            <md-option ng-repeat="s in status"
-                                                       ng-value="s.id"
-                                                       ng-bind="s.name">
-                                            </md-option>
-                                        </md-select>
-                                        <div class="md-errors-spacer"></div>
-                                    </md-input-container>
-                                </form>
-
-                                <span class="transaction-sync">
-                                    <md-progress-circular md-mode="indeterminate" md-diameter="24px">
-                                    </md-progress-circular>
-                                </span>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </section>
-            </md-content>
-        </div>
-    </div>
-</div>
+                    <span class="transaction-sync">
+                        <md-progress-circular md-mode="indeterminate" md-diameter="24px">
+                        </md-progress-circular>
+                    </span>
+                </td>
+                <td transactions-delete>
+                    <span class="transaction-delete-trigger" ng-click="delete($event, transaction)">
+                        <span><i class="material-icons md-18">delete</i></span>
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</md-content>

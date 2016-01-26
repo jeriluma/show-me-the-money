@@ -1,9 +1,20 @@
 app.directive('transactionsEdit', function() {
     return {
         restrict: 'A',
-        require: '^transactionsTable',
         scope: true,
-        link: function(scope, element, attrs, transactionsCtrl) {
+        controller: function($scope, transactionsService) {
+            this.isValid = function(transaction) {
+                return transaction == transaction;
+            };
+
+            this.updateData = function(transaction) {
+                $scope.$emit('UPDATE_DATA_POST_COMPLETE', false);
+                transactionsService.service('PUT', 'transactions/' + transaction.id, transaction).then(function() {
+                    $scope.$emit('UPDATE_DATA_POST_COMPLETE', true);
+                });
+            };
+        },
+        link: function(scope, element, attrs, ctrl) {
             var data = $(element).find('.transaction-data');
             var editTrigger = $(element).find('.transaction-edit-trigger');
             var editingElement = $(element).find('.transaction-edit');
@@ -24,7 +35,6 @@ app.directive('transactionsEdit', function() {
                     });
                 }
             });
-
             $(element).bind('mouseleave', function() {
                 $(element).removeClass('pointer');
                 if(!isEditing) {
@@ -34,7 +44,6 @@ app.directive('transactionsEdit', function() {
                     });
                 }
             });
-
             $(element).bind('click', function() {
                 if(isHover) {
                     isEditing = true;
@@ -52,20 +61,23 @@ app.directive('transactionsEdit', function() {
                     event.preventDefault(); // prevents page refresh
                 }
 
-                editingElement.fadeOut().promise().done(function() {
-                    syncElement.fadeIn().promise().done(function() {
-                        transactionsCtrl.edit(transaction).then(function () {
-                            syncElement.fadeOut().promise().done(function() {
-                                data.fadeIn(500).promise().done(function() {
-                                    isEditing = false;
-                                    editTrigger.show();
-                                });
-                            });
+                if(ctrl.isValid(transaction)) {
+                    editingElement.fadeOut().promise().done(function() {
+                        syncElement.fadeIn().promise().done(function() {
+                            ctrl.updateData(transaction);
                         });
                     });
-                });
+                }
             };
 
+            scope.$on('UPDATE_DATA_GET_COMPLETE', function() {
+                syncElement.fadeOut().promise().done(function() {
+                    data.fadeIn(500).promise().done(function() {
+                        isEditing = false;
+                        editTrigger.show();
+                    });
+                });
+            });
         }
     }
 });

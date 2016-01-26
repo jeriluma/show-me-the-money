@@ -1,19 +1,28 @@
-<div class="transactions search">
-    <!--<md-subheader class="md-primary">Search</md-subheader>-->
-    <!--<md-content>-->
+<div class="transactions search md-whiteframe-2dp" >
+    <md-content>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>
+                    <span>Search Transactions</span>
+                </h2>
+            </div>
+        </md-toolbar>
+    </md-content>
+
+    <md-content>
         <form action="" name="searchTransactionsForm" ng-submit="searchTransactionsForm.$valid && search($event)">
             <div layout-gt-xs="row">
                 <div class="md-block" flex-gt-xs layout="row">
                     <div flex>
                         <label for="" class="date-label">Start Date</label>
-                        <md-datepicker ng-model="transaction.date.start"
+                        <md-datepicker ng-model="filterProperties.date.start"
                                        placeholder="Enter Date"
                                 ></md-datepicker>
                     </div>
 
                     <div flex>
                         <label for="" class="date-label">End Date</label>
-                        <md-datepicker ng-model="transaction.date.end"
+                        <md-datepicker ng-model="filterProperties.date.end"
                                        placeholder="Enter Date"
                                        ng-required
                                 ></md-datepicker>
@@ -21,7 +30,7 @@
                 </div>
                 <md-input-container class="md-block" flex-gt-xs>
                     <label for="">Description</label>
-                    <input type="text" ng-model="transaction.description"
+                    <input type="text" ng-model="filterProperties.description"
                            placeholder="Transaction description"
                            ng-required
                             >
@@ -31,7 +40,7 @@
             <div layout-gt-xs="row">
                 <md-input-container class="md-block" flex-gt-sm>
                     <label for="">Account</label>
-                    <md-select ng-model="transaction.accountId">
+                    <md-select ng-model="filterProperties.accountId">
                         <md-option ng-repeat="account in accounts"
                                    ng-value="account.id"
                                    ng-bind="account.name"
@@ -41,7 +50,7 @@
 
                 <md-input-container class="md-block" flex-gt-sm>
                     <label for="">Category</label>
-                    <md-select ng-model="transaction.categoryId">
+                    <md-select ng-model="filterProperties.categoryId">
                         <md-optgroup label="Income">
                             <md-option ng-value="category.id"
                                        ng-repeat="category in categories | filter: {parentId: 'Expense'}"
@@ -59,7 +68,7 @@
 
                 <md-input-container class="md-block" flex-gt-sm>
                     <label for="">Status</label>
-                    <md-select ng-model="transaction.statusId">
+                    <md-select ng-model="filterProperties.statusId">
                         <md-option ng-repeat="s in status" ng-value="s.id" ng-bind="s.name"></md-option>
                     </md-select>
                 </md-input-container>
@@ -78,7 +87,7 @@
                 </span>
             </div>
         </form>
-    <!--</md-content>-->
+    </md-content>
 
-    <md-divider ng-if="!$last"></md-divider>
+    <transactions-table type="search" filter="filterProperties"></transactions-table>
 </div>

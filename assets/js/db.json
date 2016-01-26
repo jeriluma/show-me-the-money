@@ -61,7 +61,7 @@
       "description": "transaction #2",
       "accountId": 1,
       "categoryId": 1,
-      "statusId": 0,
+      "statusId": 1,
       "amount": 3,
       "balance": 4
     },
@@ -69,33 +69,12 @@
       "id": 3,
       "date": "2016-01-06T00:00:00.000Z",
       "bank_descriptions": "transaction #1",
-      "description": "transaction #2",
+      "description": "transaction #3",
       "accountId": 0,
       "categoryId": 0,
       "statusId": 2,
       "amount": 2,
       "balance": 2
-    },
-    {
-      "id": 4,
-      "date": "2016-01-07T00:00:00.000Z",
-      "bank_descriptions": "transaction #1",
-      "description": "transaction #2",
-      "accountId": 1,
-      "categoryId": 0,
-      "statusId": 2,
-      "amount": 2,
-      "balance": 0
-    },
-    {
-      "date": "2016-01-22T17:50:30.131Z",
-      "description": ":D",
-      "accountId": 0,
-      "categoryId": 0,
-      "statusId": 0,
-      "parentId": 0,
-      "amount": 3,
-      "id": 5
     }
   ]
 }

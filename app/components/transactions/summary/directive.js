@@ -13,7 +13,7 @@ app.directive('transactionsSummary', function() {
             this.init = function() {
                 var defer = $q.defer();
 
-                transactionsService.service('GET', 'transactions?accountId=0').then(function(response){
+                transactionsService.service('GET', 'transactions?accountId=0&statusId=1&statusId=2').then(function(response){
                     var balance = {
                         overall: 0,
                         debit: 0,
@@ -24,7 +24,7 @@ app.directive('transactionsSummary', function() {
                         balance.debit += transaction.amount;
                     });
 
-                    transactionsService.service('GET', 'transactions?accountId=1').then(function(response){
+                    transactionsService.service('GET', 'transactions?accountId=1&statusId=1&statusId=3').then(function(response){
                         angular.forEach(response, function(transaction) {
                             balance.credit += transaction.amount;
                         });
