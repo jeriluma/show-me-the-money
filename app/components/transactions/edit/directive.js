@@ -2,15 +2,14 @@ app.directive('transactionsEdit', function() {
     return {
         restrict: 'A',
         scope: true,
-        controller: function($scope, transactionsService) {
+        controller: function($rootScope, $scope, transactionsService) {
             this.isValid = function(transaction) {
                 return transaction == transaction;
             };
 
             this.updateData = function(transaction) {
-                $scope.$emit('UPDATE_DATA_POST_COMPLETE', false);
                 transactionsService.service('PUT', 'transactions/' + transaction.id, transaction).then(function() {
-                    $scope.$emit('UPDATE_DATA_POST_COMPLETE', true);
+                    transactionsService.setUpdateStatus(1);
                 });
             };
         },
@@ -69,15 +68,6 @@ app.directive('transactionsEdit', function() {
                     });
                 }
             };
-
-            scope.$on('UPDATE_DATA_GET_COMPLETE', function() {
-                syncElement.fadeOut().promise().done(function() {
-                    data.fadeIn(500).promise().done(function() {
-                        isEditing = false;
-                        editTrigger.show();
-                    });
-                });
-            });
         }
     }
 });

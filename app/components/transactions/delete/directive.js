@@ -1,8 +1,8 @@
-app.directive('transactionsDelete', function() {
+app.directive('transactionsDelete', ['transactionsService', function(transactionsService) {
     return {
         restrict: 'A',
         scope: true,
-        controller: function($scope, transactionsService, $mdDialog, $q) {
+        controller: function($scope, $mdDialog, $q) {
 
             this.deleteData = function(ev, transaction) {
                 var defer = $q.defer();
@@ -17,13 +17,9 @@ app.directive('transactionsDelete', function() {
                     .cancel('No');
 
                 $mdDialog.show(confirm).then(function() {
-                    $scope.$emit('UPDATE_DATA_POST_COMPLETE', false);
-                    transactionsService.service('DELETE', 'transactions/' + transaction.id).then(function() {
-                        $scope.$emit('UPDATE_DATA_POST_COMPLETE', true);
-                        defer.resolve();
-                    });
+                    defer.resolve('delete');
                 }, function() {
-                    // cancel
+                    defer.resolve('cancel');
                 });
 
                 return defer.promise
@@ -31,8 +27,10 @@ app.directive('transactionsDelete', function() {
         },
         link: function(scope, element, attrs, ctrl) {
             var deleteTrigger = $(element).find('.transaction-delete-trigger');
+            var syncElement = $(element).find('.transaction-sync');
             var isEditing = false;
             deleteTrigger.hide();
+            syncElement.hide();
 
             $(element).bind('mouseover', function() {
                 if(!isEditing) {
@@ -49,11 +47,24 @@ app.directive('transactionsDelete', function() {
             scope.delete = function(event, transaction) {
                 isEditing = true;
                 deleteTrigger.fadeIn().promise().then(function() {
-                    ctrl.deleteData(event, transaction).then(function() {
-                        isEditing = false;
+                    ctrl.deleteData(event, transaction).then(function(response) {
+                        if(response === 'delete') {
+                            deleteTrigger.fadeOut().promise().then(function() {
+                                syncElement.fadeIn().promise().then(function() {
+                                    transactionsService.service('DELETE', 'transactions/' + transaction.id).then(function() {
+                                        transactionsService.setUpdateStatus(1);
+                                        isEditing = false;
+                                    });
+                                });
+                            });
+                        } else { // cancel
+                            deleteTrigger.fadeOut().promise().then(function() {
+                                    isEditing = false;
+                            });
+                        }
                     });
                 });
             };
         }
     }
-});
+}]);

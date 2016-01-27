@@ -1,9 +1,9 @@
-app.directive('transactionsSearch', function() {
+app.directive('transactionsSearch', ['transactionsService', function(transactionsService) {
     return {
         restrict: 'E',
         replace: true,
         templateUrl: 'app/components/transactions/search/view.html',
-        controller: function($scope, transactionsService, $filter, $q) {
+        controller: function($scope, $filter, $q) {
             $scope.categories = [];
             $scope.status = [];
             $scope.accounts = [];
@@ -46,42 +46,11 @@ app.directive('transactionsSearch', function() {
             }
             initTransactions();
 
-            this.getData = function() {
-                var defer = $q.defer();
-
-                transactionsService
-                    .service('GET', 'transactions?_sort=date&_order=DESC')
-                        .then(function(response){
-
-                    $scope.transactions = $filter('filterSearchTransaction')
-                        (response, $scope.filterProperties);
-
-                    $scope.filterProperties = {
-                        date: {
-                            start: null,
-                            end: date
-                        },
-                        description: '',
-                        accountId: '',
-                        categoryId: '',
-                        statusId: ''
-                    };
-
-                    defer.resolve();
-                });
-
-                return defer.promise;
-            };
-
-            this.startData = function() {
-                var defer = $q.defer();
-                defer.resolve($scope.transactions = []);
-                return defer.promise;
-            }
         },
         link: function(scope, element, attrs, ctrl) {
             var syncElement = $(element).find('.transaction-sync');
             var searchElement = $(element).find('.transaction-search-element');
+            var isSearching = false;
 
             syncElement.hide();
 
@@ -90,21 +59,42 @@ app.directive('transactionsSearch', function() {
                     event.preventDefault(); // prevents page refresh
                 }
 
-                ctrl.startData().then(function() {
-                    searchElement.fadeOut().promise().done(function() {
-                        syncElement.fadeIn().promise().done(function() {
-                            ctrl.getData().then(function() {
-                                syncElement.fadeOut().promise().done(function() {
-                                    searchElement.fadeIn();
-                                });
-                            });
+                searchElement.fadeOut().promise().done(function() {
+                    syncElement.fadeIn().promise().done(function() {
+                        transactionsService.setFilterProperties(scope.filterProperties).then(function(){
+                            isSearching = true;
+                            transactionsService.setSearchStatus(1);
                         });
+
                     });
                 });
             };
+
+            scope.$on('transactions:search', function(event, data) {
+                if(transactionsService.getSearchStatus() === 2 && isSearching) {
+                    syncElement.fadeOut().promise().done(function() {
+                        searchElement.fadeIn().promise().done(function() {
+                            isSearching = false;
+                            var date = new Date();
+                            scope.filterProperties = {
+                                date: {
+                                    start: null,
+                                    end: date
+                                },
+                                description: '',
+                                accountId: '',
+                                categoryId: '',
+                                statusId: ''
+                            };
+                            scope.$apply();
+                            transactionsService.setSearchStatus(0);
+                        });
+                    });
+                }
+            });
         }
     }
-});
+}]);
 
 app.filter('filterSearchTransaction', ['$filter', '$q', function($filter) {
     return function(input, filterOptions) {

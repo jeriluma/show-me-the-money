@@ -1,6 +1,6 @@
 var app = angular.module('app', ['ngMaterial']);
 
-app.service('transactionsService', ['$http', '$q', function($http, $q){
+app.service('transactionsService', ['$http', '$q', '$rootScope', function($http, $q, $rootScope){
     this.service = function (method, url, data) {
         var defer = $q.defer();
 
@@ -16,93 +16,47 @@ app.service('transactionsService', ['$http', '$q', function($http, $q){
 
         return defer.promise;
     };
-}]);
-app.directive('transactionsAdd', function() {
-    return {
-        restrict: 'E',
-        replace: true,
-        scope: true,
-        templateUrl: 'app/components/transactions/add/view.html',
-        controller: function($scope, transactionsService, $q) {
-            var date = new Date();
-            $scope.transaction = {
-                date: date,
-                description: "",
-                accountId: 0,
-                categoryId: 0,
-                statusId: 0,
-                parentId: 0,
-                amount: null
-            };
 
-            function initTransactions() {
-                var defer = $q.defer();
-                var promises  = [];
+    // 0: no updates
+    // 1: post done
+    // 2: get done
+    var dataStatus = 0;
 
-                transactionsService.service('GET', 'categories').then(function(response){
-                    promises.push($scope.categories = response);
-                });
+    this.setUpdateStatus = function(statusId) {
+        dataStatus = statusId;
+        $rootScope.$broadcast('transactions:updated', true);
+    };
 
-                transactionsService.service('GET', 'status').then(function(response){
-                    promises.push($scope.status = response);
-                });
+    this.getUpdateStatus = function() {
+        return dataStatus;
+    };
 
-                transactionsService.service('GET', 'accounts').then(function(response){
-                    promises.push($scope.accounts = response);
-                });
+    var searchStatus = 0;
+    this.setSearchStatus = function(statusId) {
+        searchStatus = statusId;
+        $rootScope.$broadcast('transactions:search', true);
+    };
 
-                $q.all(promises).then(function() {
-                    defer.resolve();
-                });
+    this.getSearchStatus = function() {
+        return searchStatus;
+    };
 
-                return defer.promise;
-            }
+    var filterProperties = {};
+    this.setFilterProperties = function(filter) {
+        var defer = $q.defer();
+        defer.resolve(filterProperties = filter);
+        return defer.promise;
+    };
 
-            initTransactions();
-
-            this.isValid = function() {
-                return ($scope.transaction.description !== '') && ($scope.transaction.amount !== 0);
-            };
-
-            this.updateData = function() {
-                $scope.$emit('UPDATE_DATA_POST_COMPLETE', false);
-                transactionsService.service('POST', 'transactions/', $scope.transaction).then(function() {
-                    $scope.$emit('UPDATE_DATA_POST_COMPLETE', true);
-                });
-            };
-
-        },
-        link: function(scope, element, attrs, ctrl) {
-            var form = $(element).find('.transaction-form');
-            var syncElement = $(element).find('.transaction-sync');
-            var button = $(element).find('.transaction-submit');
-
-            syncElement.hide();
-
-            scope.add = function (event) {
-                event.preventDefault(); // prevents page refresh
-
-                if(ctrl.isValid()) {
-                    button.fadeOut().promise().done(function () {
-                        syncElement.fadeIn().promise().done(function () {
-                            ctrl.updateData();
-                        });
-                    });
-                }
-            };
-
-            scope.$on('UPDATE_DATA_GET_COMPLETE', function() {
-                syncElement.fadeOut();
-                button.fadeIn();
-            });
-        }
+    this.getFilterProperties = function() {
+        return filterProperties;
     }
-});
-app.directive('transactionsDelete', function() {
+}]);
+app.directive('transactionsDelete', ['transactionsService', function(transactionsService) {
     return {
         restrict: 'A',
         scope: true,
-        controller: function($scope, transactionsService, $mdDialog, $q) {
+        controller: function($scope, $mdDialog, $q) {
 
             this.deleteData = function(ev, transaction) {
                 var defer = $q.defer();
@@ -117,13 +71,9 @@ app.directive('transactionsDelete', function() {
                     .cancel('No');
 
                 $mdDialog.show(confirm).then(function() {
-                    $scope.$emit('UPDATE_DATA_POST_COMPLETE', false);
-                    transactionsService.service('DELETE', 'transactions/' + transaction.id).then(function() {
-                        $scope.$emit('UPDATE_DATA_POST_COMPLETE', true);
-                        defer.resolve();
-                    });
+                    defer.resolve('delete');
                 }, function() {
-                    // cancel
+                    defer.resolve('cancel');
                 });
 
                 return defer.promise
@@ -131,8 +81,10 @@ app.directive('transactionsDelete', function() {
         },
         link: function(scope, element, attrs, ctrl) {
             var deleteTrigger = $(element).find('.transaction-delete-trigger');
+            var syncElement = $(element).find('.transaction-sync');
             var isEditing = false;
             deleteTrigger.hide();
+            syncElement.hide();
 
             $(element).bind('mouseover', function() {
                 if(!isEditing) {
@@ -149,14 +101,27 @@ app.directive('transactionsDelete', function() {
             scope.delete = function(event, transaction) {
                 isEditing = true;
                 deleteTrigger.fadeIn().promise().then(function() {
-                    ctrl.deleteData(event, transaction).then(function() {
-                        isEditing = false;
+                    ctrl.deleteData(event, transaction).then(function(response) {
+                        if(response === 'delete') {
+                            deleteTrigger.fadeOut().promise().then(function() {
+                                syncElement.fadeIn().promise().then(function() {
+                                    transactionsService.service('DELETE', 'transactions/' + transaction.id).then(function() {
+                                        transactionsService.setUpdateStatus(1);
+                                        isEditing = false;
+                                    });
+                                });
+                            });
+                        } else { // cancel
+                            deleteTrigger.fadeOut().promise().then(function() {
+                                    isEditing = false;
+                            });
+                        }
                     });
                 });
             };
         }
     }
-});
+}]);
 app.directive('transactionsSummary', function() {
     return {
         restrict: 'E',
@@ -213,16 +178,214 @@ app.directive('transactionsSummary', function() {
         }
     }
 });
+app.directive('transactionsSearch', ['transactionsService', function(transactionsService) {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'app/components/transactions/search/view.html',
+        controller: function($scope, $filter, $q) {
+            $scope.categories = [];
+            $scope.status = [];
+            $scope.accounts = [];
+            $scope.headers = ['Date', 'Description', 'Account',
+                'Category', 'Amount', 'Balance', 'Status'];
+            $scope.transactions = [];
+            var date = new Date();
+            $scope.filterProperties = {
+                date: {
+                    start: null,
+                    end: date
+                },
+                description: '',
+                accountId: '',
+                categoryId: '',
+                statusId: ''
+            };
+
+            function initTransactions() {
+                var defer = $q.defer();
+                var promises  = [];
+
+                transactionsService.service('GET', 'categories').then(function(response){
+                    promises.push($scope.categories = response);
+                });
+
+                transactionsService.service('GET', 'status').then(function(response){
+                    promises.push($scope.status = response);
+                });
+
+                transactionsService.service('GET', 'accounts').then(function(response){
+                    promises.push($scope.accounts = response);
+                });
+
+                $q.all(promises).then(function() {
+                    defer.resolve();
+                });
+
+                return defer.promise;
+            }
+            initTransactions();
+
+        },
+        link: function(scope, element, attrs, ctrl) {
+            var syncElement = $(element).find('.transaction-sync');
+            var searchElement = $(element).find('.transaction-search-element');
+            var isSearching = false;
+
+            syncElement.hide();
+
+            scope.search = function(event) {
+                if(event) {
+                    event.preventDefault(); // prevents page refresh
+                }
+
+                searchElement.fadeOut().promise().done(function() {
+                    syncElement.fadeIn().promise().done(function() {
+                        transactionsService.setFilterProperties(scope.filterProperties).then(function(){
+                            isSearching = true;
+                            transactionsService.setSearchStatus(1);
+                        });
+
+                    });
+                });
+            };
+
+            scope.$on('transactions:search', function(event, data) {
+                if(transactionsService.getSearchStatus() === 2 && isSearching) {
+                    syncElement.fadeOut().promise().done(function() {
+                        searchElement.fadeIn().promise().done(function() {
+                            isSearching = false;
+                            var date = new Date();
+                            scope.filterProperties = {
+                                date: {
+                                    start: null,
+                                    end: date
+                                },
+                                description: '',
+                                accountId: '',
+                                categoryId: '',
+                                statusId: ''
+                            };
+                            scope.$apply();
+                            transactionsService.setSearchStatus(0);
+                        });
+                    });
+                }
+            });
+        }
+    }
+}]);
+
+app.filter('filterSearchTransaction', ['$filter', '$q', function($filter) {
+    return function(input, filterOptions) {
+        var output = [];
+
+        angular.forEach(input, function(transaction) {
+            transaction.date = new Date(transaction.date);
+            var validStartDate = filterOptions.date.start === null
+                || transaction.date >= filterOptions.date.start;
+            var validEndDate =  transaction.date <= filterOptions.date.end;
+            var validAccountId = filterOptions.accountId === ''
+                || transaction.accountId === filterOptions.accountId;
+            var validCategoryId = filterOptions.categoryId === ''
+                || transaction.categoryId === filterOptions.categoryId;
+            var validStatusId = filterOptions.statusId === ''
+                || transaction.statusId === filterOptions.statusId;
+
+            if(validStartDate && validEndDate && validAccountId && validCategoryId && validStatusId) {
+                output.push(transaction);
+            }
+        });
+
+        if(filterOptions.description !== '') {
+            output = $filter('filter')(output, filterOptions.description);
+        }
+
+        return output;
+    }
+}]);
+app.directive('transactionsEdit', function() {
+    return {
+        restrict: 'A',
+        scope: true,
+        controller: function($rootScope, $scope, transactionsService) {
+            this.isValid = function(transaction) {
+                return transaction == transaction;
+            };
+
+            this.updateData = function(transaction) {
+                transactionsService.service('PUT', 'transactions/' + transaction.id, transaction).then(function() {
+                    transactionsService.setUpdateStatus(1);
+                });
+            };
+        },
+        link: function(scope, element, attrs, ctrl) {
+            var data = $(element).find('.transaction-data');
+            var editTrigger = $(element).find('.transaction-edit-trigger');
+            var editingElement = $(element).find('.transaction-edit');
+            var syncElement = $(element).find('.transaction-sync');
+            var isHover = false;
+            var isEditing = false;
+
+            editTrigger.hide();
+            editingElement.hide();
+            syncElement.hide();
+
+            $(element).bind('mouseover', function() {
+                $(element).removeClass('pointer');
+                if(!isEditing) {
+                    $(element).addClass('pointer');
+                    editTrigger.fadeIn().promise().done(function() {
+                        isHover = true;
+                    });
+                }
+            });
+            $(element).bind('mouseleave', function() {
+                $(element).removeClass('pointer');
+                if(!isEditing) {
+                    $(element).addClass('pointer');
+                    editTrigger.fadeOut().promise().done(function() {
+                        isHover = false;
+                    });
+                }
+            });
+            $(element).bind('click', function() {
+                if(isHover) {
+                    isEditing = true;
+                    isHover = false;
+                    editTrigger.hide().promise().done(function() {
+                        data.fadeOut().promise().done(function() {
+                            editingElement.fadeIn();
+                        });
+                    });
+                }
+            });
+
+            scope.save = function(transaction, event) {
+                if(event) {
+                    event.preventDefault(); // prevents page refresh
+                }
+
+                if(ctrl.isValid(transaction)) {
+                    editingElement.fadeOut().promise().done(function() {
+                        syncElement.fadeIn().promise().done(function() {
+                            ctrl.updateData(transaction);
+                        });
+                    });
+                }
+            };
+        }
+    }
+});
 app.directive('transactionsTable', function() {
     return {
         restrict: 'E',
         replace: true,
         scope: {
-            type: '@',
-            filter: '='
+            type: '@'
         },
         templateUrl: 'app/components/transactions/table/view.html',
-        controller: function($scope, transactionsService, $q) {
+        controller: function($scope, transactionsService, $q, $filter) {
             $scope.categories = [];
             $scope.status = [];
             $scope.accounts = [];
@@ -292,46 +455,30 @@ app.directive('transactionsTable', function() {
             }
 
             // Updating Transactions
-            $scope.$on('UPDATE_DATA_POST_COMPLETE', function(e, status){
-                if(status) {
-                    $scope.$emit('UPDATE_DATA_GET_COMPLETE', false);
+            $scope.$on('transactions:updated', function(event, data) {
+                if(transactionsService.getUpdateStatus() === 1 && $scope.type !== 'search') {
                     transactionsService.service('GET', 'transactions?_sort=date&_order=DESC')
                         .then(function(response){
                             runBalances(response).then(function(response){
-                                $scope.transactions = response;
-                                $scope.$emit('UPDATE_DATA_GET_COMPLETE', true);
+                                    $scope.transactions = response;
+                                    transactionsService.setUpdateStatus(2);
                             });
                         });
                 }
             });
-        },
-        link: function(scope, element, attrs, ctrl) {
-            var deleteElement = $(element).find('.transaction-delete');
-            var syncElement = $(element).find('.transaction-sync');
-            syncElement.hide();
 
-            scope.delete = function() {
-                if(ctrl.hasCheckedIds()) {
-                    deleteElement.fadeOut().promise().done(function() {
-                        syncElement.fadeIn().promise().done(function() {
-                            ctrl.delete().then(function() {
-                                syncElement.fadeOut().promise().done(function(){
-                                    deleteElement.fadeIn();
-                                });
+            // Search Transactions
+            $scope.$on('transactions:search', function(event, data) {
+                if(transactionsService.getSearchStatus() === 1) {
+                    transactionsService.service('GET', 'transactions?_sort=date&_order=DESC')
+                        .then(function(response){
+                            runBalances(response).then(function(response){
+                                $scope.transactions = $filter('filterSearchTransaction')(response, transactionsService.getFilterProperties());
+                                transactionsService.setSearchStatus(2);
                             });
                         });
-                    });
                 }
-            };
-        }
-    }
-});
-app.directive('transactionsTransactions', function() {
-    return {
-        restrict: 'E',
-        replace: true,
-        templateUrl: 'app/components/transactions/transactions/view.html',
-        controller: function($scope, transactionsService, $q) {
+            });
 
         },
         link: function(scope, element, attrs, ctrl) {
@@ -339,111 +486,21 @@ app.directive('transactionsTransactions', function() {
         }
     }
 });
-app.directive('transactionsEdit', function() {
-    return {
-        restrict: 'A',
-        scope: true,
-        controller: function($scope, transactionsService) {
-            this.isValid = function(transaction) {
-                return transaction == transaction;
-            };
-
-            this.updateData = function(transaction) {
-                $scope.$emit('UPDATE_DATA_POST_COMPLETE', false);
-                transactionsService.service('PUT', 'transactions/' + transaction.id, transaction).then(function() {
-                    $scope.$emit('UPDATE_DATA_POST_COMPLETE', true);
-                });
-            };
-        },
-        link: function(scope, element, attrs, ctrl) {
-            var data = $(element).find('.transaction-data');
-            var editTrigger = $(element).find('.transaction-edit-trigger');
-            var editingElement = $(element).find('.transaction-edit');
-            var syncElement = $(element).find('.transaction-sync');
-            var isHover = false;
-            var isEditing = false;
-
-            editTrigger.hide();
-            editingElement.hide();
-            syncElement.hide();
-
-            $(element).bind('mouseover', function() {
-                $(element).removeClass('pointer');
-                if(!isEditing) {
-                    $(element).addClass('pointer');
-                    editTrigger.fadeIn().promise().done(function() {
-                        isHover = true;
-                    });
-                }
-            });
-            $(element).bind('mouseleave', function() {
-                $(element).removeClass('pointer');
-                if(!isEditing) {
-                    $(element).addClass('pointer');
-                    editTrigger.fadeOut().promise().done(function() {
-                        isHover = false;
-                    });
-                }
-            });
-            $(element).bind('click', function() {
-                if(isHover) {
-                    isEditing = true;
-                    isHover = false;
-                    editTrigger.hide().promise().done(function() {
-                        data.fadeOut().promise().done(function() {
-                            editingElement.fadeIn();
-                        });
-                    });
-                }
-            });
-
-            scope.save = function(transaction, event) {
-                if(event) {
-                    event.preventDefault(); // prevents page refresh
-                }
-
-                if(ctrl.isValid(transaction)) {
-                    editingElement.fadeOut().promise().done(function() {
-                        syncElement.fadeIn().promise().done(function() {
-                            ctrl.updateData(transaction);
-                        });
-                    });
-                }
-            };
-
-            scope.$on('UPDATE_DATA_GET_COMPLETE', function() {
-                syncElement.fadeOut().promise().done(function() {
-                    data.fadeIn(500).promise().done(function() {
-                        isEditing = false;
-                        editTrigger.show();
-                    });
-                });
-            });
-        }
-    }
-});
-app.directive('transactionsSearch', function() {
+app.directive('transactionsAdd', ['transactionsService', function(transactionsService) {
     return {
         restrict: 'E',
         replace: true,
-        templateUrl: 'app/components/transactions/search/view.html',
-        controller: function($scope, transactionsService, $filter, $q) {
-            $scope.categories = [];
-            $scope.status = [];
-            $scope.accounts = [];
-            $scope.headers = ['Date', 'Description', 'Account',
-                'Category', 'Amount', 'Balance', 'Status'];
-            $scope.transactions = [];
+        templateUrl: 'app/components/transactions/add/view.html',
+        controller: function($scope, $q) {
             var date = new Date();
-            $scope.filterProperties = {
-                date: {
-                    start: null,
-                    end: date
-                },
-                description: '',
-                accountId: '',
-                categoryId: '',
-                statusId: ''
+            $scope.transaction = {
+                date: date,
+                description: "",
+                accountId: 0,
+                categoryId: 0,
+                statusId: 0,
+                parentId: 0,
+                amount: null
             };
 
             function initTransactions() {
@@ -468,93 +525,80 @@ app.directive('transactionsSearch', function() {
 
                 return defer.promise;
             }
+
             initTransactions();
 
-            this.getData = function() {
-                var defer = $q.defer();
-
-                transactionsService
-                    .service('GET', 'transactions?_sort=date&_order=DESC')
-                        .then(function(response){
-
-                    $scope.transactions = $filter('filterSearchTransaction')
-                        (response, $scope.filterProperties);
-
-                    $scope.filterProperties = {
-                        date: {
-                            start: null,
-                            end: date
-                        },
-                        description: '',
-                        accountId: '',
-                        categoryId: '',
-                        statusId: ''
-                    };
-
-                    defer.resolve();
-                });
-
-                return defer.promise;
+            this.isValid = function() {
+                return ($scope.transaction.description !== '') && ($scope.transaction.amount !== 0);
             };
 
-            this.startData = function() {
-                var defer = $q.defer();
-                defer.resolve($scope.transactions = []);
-                return defer.promise;
+            $scope.isUpdating = false;
+            this.updateData = function() {
+                transactionsService.service('POST', 'transactions/', $scope.transaction).then(function() {
+                    $scope.isUpdating = true;
+                    transactionsService.setUpdateStatus(1);
+                });
+            };
+
+            this.updateDone = function() {
+                $scope.isUpdating = false;
+                transactionsService.setUpdateStatus(0);
+
+                var date = new Date();
+                $scope.transaction = {
+                    date: date,
+                    description: "",
+                    accountId: 0,
+                    categoryId: 0,
+                    statusId: 0,
+                    parentId: 0,
+                    amount: null
+                };
+                $scope.$apply();
             }
         },
         link: function(scope, element, attrs, ctrl) {
+            var form = $(element).find('.transaction-form');
             var syncElement = $(element).find('.transaction-sync');
-            var searchElement = $(element).find('.transaction-search-element');
+            var button = $(element).find('.transaction-submit');
 
             syncElement.hide();
 
-            scope.search = function(event) {
-                if(event) {
-                    event.preventDefault(); // prevents page refresh
-                }
+            scope.add = function (event) {
+                event.preventDefault(); // prevents page refresh
 
-                ctrl.startData().then(function() {
-                    searchElement.fadeOut().promise().done(function() {
-                        syncElement.fadeIn().promise().done(function() {
-                            ctrl.getData().then(function() {
-                                syncElement.fadeOut().promise().done(function() {
-                                    searchElement.fadeIn();
-                                });
-                            });
+                if(ctrl.isValid()) {
+                    button.fadeOut().promise().done(function () {
+                        syncElement.fadeIn().promise().done(function () {
+                            ctrl.updateData();
                         });
                     });
-                });
+                }
             };
+
+            scope.$on('transactions:updated', function(event, data) {
+                if(transactionsService.getUpdateStatus() === 2 && scope.isUpdating) {
+                    syncElement.fadeOut().promise().then(function() {
+                        button.fadeIn().promise().then(function() {
+                            ctrl.updateDone();
+                        });
+                    });
+                }
+            });
+
+        }
+    }
+}]);
+app.directive('transactionsTransactions', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'app/components/transactions/transactions/view.html',
+        controller: function($scope) {
+
+        },
+        link: function(scope, element, attrs, ctrl) {
+
         }
     }
 });
-
-app.filter('filterSearchTransaction', ['$filter', '$q', function($filter) {
-    return function(input, filterOptions) {
-        var output = [];
-
-        angular.forEach(input, function(transaction) {
-            transaction.date = new Date(transaction.date);
-            var validStartDate = filterOptions.date.start === null
-                || transaction.date >= filterOptions.date.start;
-            var validEndDate =  transaction.date <= filterOptions.date.end;
-            var validAccountId = filterOptions.accountId === ''
-                || transaction.accountId === filterOptions.accountId;
-            var validCategoryId = filterOptions.categoryId === ''
-                || transaction.categoryId === filterOptions.categoryId;
-            var validStatusId = filterOptions.statusId === ''
-                || transaction.statusId === filterOptions.statusId;
-
-            if(validStartDate && validEndDate && validAccountId && validCategoryId && validStatusId) {
-                output.push(transaction);
-            }
-        });
-
-        if(filterOptions.description !== '') {
-            output = $filter('filter')(output, filterOptions.description);
-        }
-
-        return output;
-    }
-}]);

@@ -3,11 +3,10 @@ app.directive('transactionsTable', function() {
         restrict: 'E',
         replace: true,
         scope: {
-            type: '@',
-            filter: '='
+            type: '@'
         },
         templateUrl: 'app/components/transactions/table/view.html',
-        controller: function($scope, transactionsService, $q) {
+        controller: function($scope, transactionsService, $q, $filter) {
             $scope.categories = [];
             $scope.status = [];
             $scope.accounts = [];
@@ -77,37 +76,34 @@ app.directive('transactionsTable', function() {
             }
 
             // Updating Transactions
-            $scope.$on('UPDATE_DATA_POST_COMPLETE', function(e, status){
-                if(status) {
-                    $scope.$emit('UPDATE_DATA_GET_COMPLETE', false);
+            $scope.$on('transactions:updated', function(event, data) {
+                if(transactionsService.getUpdateStatus() === 1 && $scope.type !== 'search') {
                     transactionsService.service('GET', 'transactions?_sort=date&_order=DESC')
                         .then(function(response){
                             runBalances(response).then(function(response){
-                                $scope.transactions = response;
-                                $scope.$emit('UPDATE_DATA_GET_COMPLETE', true);
+                                    $scope.transactions = response;
+                                    transactionsService.setUpdateStatus(2);
                             });
                         });
                 }
             });
-        },
-        link: function(scope, element, attrs, ctrl) {
-            var deleteElement = $(element).find('.transaction-delete');
-            var syncElement = $(element).find('.transaction-sync');
-            syncElement.hide();
 
-            scope.delete = function() {
-                if(ctrl.hasCheckedIds()) {
-                    deleteElement.fadeOut().promise().done(function() {
-                        syncElement.fadeIn().promise().done(function() {
-                            ctrl.delete().then(function() {
-                                syncElement.fadeOut().promise().done(function(){
-                                    deleteElement.fadeIn();
-                                });
+            // Search Transactions
+            $scope.$on('transactions:search', function(event, data) {
+                if(transactionsService.getSearchStatus() === 1) {
+                    transactionsService.service('GET', 'transactions?_sort=date&_order=DESC')
+                        .then(function(response){
+                            runBalances(response).then(function(response){
+                                $scope.transactions = $filter('filterSearchTransaction')(response, transactionsService.getFilterProperties());
+                                transactionsService.setSearchStatus(2);
                             });
                         });
-                    });
                 }
-            };
+            });
+
+        },
+        link: function(scope, element, attrs, ctrl) {
+
         }
     }
 });

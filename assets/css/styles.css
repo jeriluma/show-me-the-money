@@ -90,17 +90,6 @@ main {
 .transactions, .transaction {
   margin: 1em; }
 
-.transaction.add form {
-  padding: 1em; }
-
-.transaction.add md-datepicker {
-  margin: 18px 0;
-  padding-right: 2px; }
-
-.transaction.add .transaction-sync {
-  margin-right: 3em;
-  height: 48px; }
-
 .transactions.search form {
   padding: 1em; }
 
@@ -114,7 +103,6 @@ main {
   color: rgba(0, 0, 0, 0.26);
   display: block;
   margin-top: 6px; }
-
 
 
 .transactions.table table {
@@ -141,3 +129,15 @@ main {
       width: 90px; }
   .transactions.table td md-select {
     margin: 0; }
+
+
+.transaction.add form {
+  padding: 1em; }
+
+.transaction.add md-datepicker {
+  margin: 18px 0;
+  padding-right: 2px; }
+
+.transaction.add .transaction-sync {
+  margin-right: 3em;
+  height: 48px; }

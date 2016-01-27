@@ -3,7 +3,7 @@ app.directive('transactionsTransactions', function() {
         restrict: 'E',
         replace: true,
         templateUrl: 'app/components/transactions/transactions/view.html',
-        controller: function($scope, transactionsService, $q) {
+        controller: function($scope) {
 
         },
         link: function(scope, element, attrs, ctrl) {

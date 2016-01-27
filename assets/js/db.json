@@ -70,11 +70,31 @@
       "date": "2016-01-06T00:00:00.000Z",
       "bank_descriptions": "transaction #1",
       "description": "transaction #3",
-      "accountId": 0,
+      "accountId": 1,
       "categoryId": 0,
       "statusId": 2,
       "amount": 2,
-      "balance": 2
+      "balance": 6
+    },
+    {
+      "date": "2016-01-27T20:06:21.249Z",
+      "description": "asdf",
+      "accountId": 0,
+      "categoryId": 0,
+      "statusId": 0,
+      "parentId": 0,
+      "amount": 3,
+      "id": 4
+    },
+    {
+      "date": "2016-01-27T20:06:44.683Z",
+      "description": "asdf",
+      "accountId": 0,
+      "categoryId": 0,
+      "statusId": 0,
+      "parentId": 0,
+      "amount": 1,
+      "id": 5
     }
   ]
 }
