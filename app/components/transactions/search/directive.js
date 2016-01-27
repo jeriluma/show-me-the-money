@@ -46,6 +46,22 @@ app.directive('transactionsSearch', ['transactionsService', function(transaction
             }
             initTransactions();
 
+            this.searchDone = function() {
+                var date = new Date();
+                $scope.filterProperties = {
+                    date: {
+                        start: null,
+                        end: date
+                    },
+                    description: '',
+                    accountId: '',
+                    categoryId: '',
+                    statusId: ''
+                };
+                $scope.$apply();
+                transactionsService.setFilterStatus(0);
+            }
+
         },
         link: function(scope, element, attrs, ctrl) {
             var syncElement = $(element).find('.transaction-sync');
@@ -61,66 +77,22 @@ app.directive('transactionsSearch', ['transactionsService', function(transaction
 
                 searchElement.fadeOut().promise().done(function() {
                     syncElement.fadeIn().promise().done(function() {
-                        transactionsService.setFilterProperties(scope.filterProperties).then(function(){
-                            isSearching = true;
-                            transactionsService.setSearchStatus(1);
-                        });
-
+                        isSearching = true;
+                        transactionsService.setFilterStatus(1);
                     });
                 });
             };
 
-            scope.$on('transactions:search', function(event, data) {
-                if(transactionsService.getSearchStatus() === 2 && isSearching) {
+            scope.$on('transactions:filter', function(event, data) {
+                if(transactionsService.getFilterStatus() === 2 && isSearching) {
                     syncElement.fadeOut().promise().done(function() {
                         searchElement.fadeIn().promise().done(function() {
                             isSearching = false;
-                            var date = new Date();
-                            scope.filterProperties = {
-                                date: {
-                                    start: null,
-                                    end: date
-                                },
-                                description: '',
-                                accountId: '',
-                                categoryId: '',
-                                statusId: ''
-                            };
-                            scope.$apply();
-                            transactionsService.setSearchStatus(0);
+                            ctrl.searchDone();
                         });
                     });
                 }
             });
         }
-    }
-}]);
-
-app.filter('filterSearchTransaction', ['$filter', '$q', function($filter) {
-    return function(input, filterOptions) {
-        var output = [];
-
-        angular.forEach(input, function(transaction) {
-            transaction.date = new Date(transaction.date);
-            var validStartDate = filterOptions.date.start === null
-                || transaction.date >= filterOptions.date.start;
-            var validEndDate =  transaction.date <= filterOptions.date.end;
-            var validAccountId = filterOptions.accountId === ''
-                || transaction.accountId === filterOptions.accountId;
-            var validCategoryId = filterOptions.categoryId === ''
-                || transaction.categoryId === filterOptions.categoryId;
-            var validStatusId = filterOptions.statusId === ''
-                || transaction.statusId === filterOptions.statusId;
-
-            if(validStartDate && validEndDate && validAccountId && validCategoryId && validStatusId) {
-                output.push(transaction);
-            }
-        });
-
-        if(filterOptions.description !== '') {
-            output = $filter('filter')(output, filterOptions.description);
-        }
-
-        return output;
     }
 }]);

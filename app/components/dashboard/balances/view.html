@@ -1,4 +1,4 @@
-<div class="transaction summary md-whiteframe-2dp" >
+<div class="transaction balances md-whiteframe-2dp" >
     <md-content>
         <md-toolbar>
             <div class="md-toolbar-tools">
@@ -12,15 +12,17 @@
     <md-content class="content" layout-sm="column" layout-xs="column" layout="row" layout-padding>
         <div flex-xs="100" flex-sm="100" flex="33">
             <h3>Overall</h3>
-            <p ng-bind="balance.overall"></p>
+            <p ng-bind="balance.overall | currency:'$'"></p>
         </div>
         <div flex-xs="100" flex-sm="100" flex="33">
             <h3>Debit</h3>
-            <p ng-bind="balance.debit"></p>
+            <p ng-bind="balance.debit | currency:'$'"></p>
         </div>
         <div flex-xs="100" flex-sm="100" flex="33">
             <h3>Credit</h3>
-            <p ng-bind="balance.credit"></p>
+            <p ng-bind="balance.credit | currency:'$'"></p>
         </div>
     </md-content>
+
+    <dashboard-charts></dashboard-charts>
 </div>

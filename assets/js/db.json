@@ -61,7 +61,7 @@
       "description": "transaction #2",
       "accountId": 1,
       "categoryId": 1,
-      "statusId": 1,
+      "statusId": 3,
       "amount": 3,
       "balance": 4
     },
@@ -79,22 +79,24 @@
     {
       "date": "2016-01-27T20:06:21.249Z",
       "description": "asdf",
-      "accountId": 0,
+      "accountId": 1,
       "categoryId": 0,
-      "statusId": 0,
+      "statusId": 1,
       "parentId": 0,
       "amount": 3,
-      "id": 4
+      "id": 4,
+      "balance": 5
     },
     {
       "date": "2016-01-27T20:06:44.683Z",
       "description": "asdf",
-      "accountId": 0,
+      "accountId": 1,
       "categoryId": 0,
-      "statusId": 0,
+      "statusId": 1,
       "parentId": 0,
       "amount": 1,
-      "id": 5
+      "id": 5,
+      "balance": -2
     }
   ]
 }

@@ -2,7 +2,7 @@ app.directive('transactionsSummary', function() {
     return {
         restrict: 'E',
         replace: true,
-        templateUrl: 'app/components/transactions/summary/view.html',
+        templateUrl: 'app/components/summary/view.html',
         controller: function($scope, transactionsService, $filter, $q) {
             $scope.balance = {
                 overall: '',

@@ -2,7 +2,7 @@ app.directive('transactionsAdd', ['transactionsService', function(transactionsSe
     return {
         restrict: 'E',
         replace: true,
-        templateUrl: 'app/components/transactions/add/view.html',
+        templateUrl: 'app/components/add/view.html',
         controller: function($scope, $q) {
             var date = new Date();
             $scope.transaction = {

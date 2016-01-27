@@ -3,7 +3,8 @@ app.directive('transactionsTable', function() {
         restrict: 'E',
         replace: true,
         scope: {
-            type: '@'
+            type: '@',
+            filter: '='
         },
         templateUrl: 'app/components/transactions/table/view.html',
         controller: function($scope, transactionsService, $q, $filter) {
@@ -13,15 +14,29 @@ app.directive('transactionsTable', function() {
             $scope.headers = ['Date', 'Description', 'Account', 'Category', 'Amount', 'Balance', 'Status'];
 
             initTransactions().then(function() {
-                if($scope.type !== 'search') {
+                if(typeof $scope.type === 'undefined' || $scope.type === 'credit' || $scope.type === 'draft') {
                     transactionsService.service('GET', 'transactions?_sort=date&_order=DESC')
                         .then(function(response){
                             runBalances(response).then(function(response){
-                                $scope.transactions = response;
+                                setTransactions(response);
                             });
                         });
                 }
             });
+
+            function setTransactions(response) {
+                if(typeof $scope.type === 'undefined') {
+                    $scope.transactions = response;
+                } else {
+                    var filterType = '';
+                    if($scope.type === 'credit') {
+                        filterType = 'filterCreditTransactions';
+                    } else {
+                        filterType = 'filterDraftTransactions';
+                    }
+                    $scope.transactions = $filter(filterType)(response);
+                }
+            }
 
             function initTransactions() {
                 var defer = $q.defer();
@@ -81,26 +96,25 @@ app.directive('transactionsTable', function() {
                     transactionsService.service('GET', 'transactions?_sort=date&_order=DESC')
                         .then(function(response){
                             runBalances(response).then(function(response){
-                                    $scope.transactions = response;
+                                    setTransactions(response);
                                     transactionsService.setUpdateStatus(2);
                             });
                         });
                 }
             });
 
-            // Search Transactions
-            $scope.$on('transactions:search', function(event, data) {
-                if(transactionsService.getSearchStatus() === 1) {
+            // Filter Transactions
+            $scope.$on('transactions:filter', function(event, data) {
+                if(transactionsService.getFilterStatus() === 1 && typeof $scope.filter !== 'undefined') {
                     transactionsService.service('GET', 'transactions?_sort=date&_order=DESC')
                         .then(function(response){
                             runBalances(response).then(function(response){
-                                $scope.transactions = $filter('filterSearchTransaction')(response, transactionsService.getFilterProperties());
-                                transactionsService.setSearchStatus(2);
+                                $scope.transactions = $filter('filterSearchTransaction')(response, $scope.filter);
+                                transactionsService.setFilterStatus(2);
                             });
                         });
                 }
             });
-
         },
         link: function(scope, element, attrs, ctrl) {
 

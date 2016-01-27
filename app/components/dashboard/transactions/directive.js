@@ -1,8 +1,8 @@
-app.directive('transactionsTransactions', function() {
+app.directive('dashboardTransactions', ['transactionsService', function(transactionsService) {
     return {
         restrict: 'E',
         replace: true,
-        templateUrl: 'app/components/transactions/transactions/view.html',
+        templateUrl: 'app/components/dashboard/transactions/view.html',
         controller: function($scope) {
 
         },
@@ -10,4 +10,4 @@ app.directive('transactionsTransactions', function() {
 
         }
     }
-});
+}]);
