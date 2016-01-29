@@ -1,49 +1,10 @@
 var app = angular.module('app', ['ngMaterial']);
 
-app.service('transactionsService', ['$http', '$q', '$rootScope', function($http, $q, $rootScope){
-    this.service = function (method, url, data) {
-        var defer = $q.defer();
-
-        $http({
-            method: method,
-            url: 'http://localhost:3000/' + url,
-            data: data
-        }).then(function successCallback(response) {
-            defer.resolve(response.data);
-        }, function errorCallback(response) {
-            defer.reject(response.statusText);
+app.service('transactionsService', ['$http', '$q', '$filter', '$rootScope', function($http, $q, $filter, $rootScope) {
+        initStaticData().then(function() {
+            $rootScope.$broadcast('transactionsService:init');
+            return updateAllTransactions();
         });
-
-        return defer.promise;
-    };
-
-    // 0: no updates
-    // 1: post done
-    // 2: get done
-    var dataStatus = 0;
-
-    this.setUpdateStatus = function(statusId) {
-        dataStatus = statusId;
-        $rootScope.$broadcast('transactions:updated', true);
-    };
-
-    this.getUpdateStatus = function() {
-        return dataStatus;
-    };
-
-    var filterStatus = 0;
-    this.setFilterStatus = function(statusId) {
-        filterStatus = statusId;
-        $rootScope.$broadcast('transactions:filter', true);
-    };
-
-    this.getFilterStatus = function() {
-        return filterStatus;
-    };
-}]);
-
-app.service('transactionsSrv', ['$http', '$q', '$filter', '$rootScope',
-    function($http, $q, $filter, $rootScope) {
 
         // Static Data
         var categories = [];
@@ -88,12 +49,11 @@ app.service('transactionsSrv', ['$http', '$q', '$filter', '$rootScope',
 
 
             $q.all(promises).then(function() {
-                defer.resolve($rootScope.$broadcast('transactions:init', true));
+                defer.resolve();
             });
 
             return defer.promise;
         }
-        initStaticData();
 
         // Account Balances
         var balances = {
@@ -106,8 +66,23 @@ app.service('transactionsSrv', ['$http', '$q', '$filter', '$rootScope',
         };
 
         // Searching Transactions
+        var searchResults = [];
         this.searchTransactions = function(filter) {
-            return $filter('filterSearchTransaction')(allTransactions, filter);
+            var defer = $q.defer();
+            setSearchResults(filter).then(function() {
+                defer.resolve($rootScope.$broadcast('transactionsService:search', true));
+            });
+            return defer.promise;
+        };
+
+        function setSearchResults(filter) {
+            var defer = $q.defer();
+            defer.resolve(searchResults = $filter('filterSearchTransaction')(allTransactions, filter));
+            return defer.promise;
+        }
+
+        this.getSearchResults = function() {
+            return searchResults;
         };
 
         // Transactions Interactions
@@ -152,12 +127,12 @@ app.service('transactionsSrv', ['$http', '$q', '$filter', '$rootScope',
             return defer.promise;
         };
 
-        this.deleteTransaction = function(id) {
+        this.deleteTransaction = function(transactions) {
             var defer = $q.defer();
 
             $http({
                 method: 'DELETE',
-                url: 'http://localhost:3000/transactions/' + id
+                url: 'http://localhost:3000/transactions/' + transactions.id
             }).then(function successCallback(response) {
                 updateAllTransactions().then(function() {
                     defer.resolve();
@@ -167,7 +142,7 @@ app.service('transactionsSrv', ['$http', '$q', '$filter', '$rootScope',
             return defer.promise;
         };
 
-        this.editTransactions = function(transaction) {
+        this.editTransaction = function(transaction) {
             var defer = $q.defer();
 
             $http({
@@ -206,7 +181,7 @@ app.service('transactionsSrv', ['$http', '$q', '$filter', '$rootScope',
             }).then(function successCallback(response) {
                 allTransactions = response.data;
                 analyzeAllTransactions().then(function() {
-                    defer.resolve();
+                    defer.resolve($rootScope.$broadcast('transactionsService:updated', true));
                 });
             });
 
@@ -266,7 +241,7 @@ app.service('transactionsSrv', ['$http', '$q', '$filter', '$rootScope',
         }
     }]);
 
-app.filter('filterSearchTransaction', ['$filter', '$q', function($filter) {
+app.filter('filterSearchTransaction', ['$filter', function($filter) {
     return function(input, filterOptions) {
         var output = [];
 

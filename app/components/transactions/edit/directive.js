@@ -8,9 +8,7 @@ app.directive('transactionsEdit', function() {
             };
 
             this.updateData = function(transaction) {
-                transactionsService.service('PUT', 'transactions/' + transaction.id, transaction).then(function() {
-                    transactionsService.setUpdateStatus(1);
-                });
+                return transactionsService.editTransaction(transaction);
             };
         },
         link: function(scope, element, attrs, ctrl) {

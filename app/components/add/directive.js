@@ -4,6 +4,9 @@ app.directive('transactionsAdd', ['transactionsService', function(transactionsSe
         replace: true,
         templateUrl: 'app/components/add/view.html',
         controller: function($scope, $q) {
+            $scope.categories = [];
+            $scope.status = [];
+            $scope.accounts = [];
             var date = new Date();
             $scope.transaction = {
                 date: date,
@@ -15,59 +18,34 @@ app.directive('transactionsAdd', ['transactionsService', function(transactionsSe
                 amount: null
             };
 
-            function initTransactions() {
-                var defer = $q.defer();
-                var promises  = [];
-
-                transactionsService.service('GET', 'categories').then(function(response){
-                    promises.push($scope.categories = response);
-                });
-
-                transactionsService.service('GET', 'status').then(function(response){
-                    promises.push($scope.status = response);
-                });
-
-                transactionsService.service('GET', 'accounts').then(function(response){
-                    promises.push($scope.accounts = response);
-                });
-
-                $q.all(promises).then(function() {
-                    defer.resolve();
-                });
-
-                return defer.promise;
-            }
-
-            initTransactions();
+            $scope.$on('transactionsService:init', function() {
+                $scope.categories = transactionsService.getCategories();
+                $scope.status = transactionsService.getStatus();
+                $scope.accounts = transactionsService.getAccounts();
+            });
 
             this.isValid = function() {
                 return ($scope.transaction.description !== '') && ($scope.transaction.amount !== 0);
             };
 
-            $scope.isUpdating = false;
             this.updateData = function() {
-                transactionsService.service('POST', 'transactions/', $scope.transaction).then(function() {
-                    $scope.isUpdating = true;
-                    transactionsService.setUpdateStatus(1);
+                var defer = $q.defer();
+                transactionsService.addTransaction($scope.transaction).then(function() {
+                    var date = new Date();
+                    $scope.transaction = {
+                        date: date,
+                        description: "",
+                        accountId: 0,
+                        categoryId: 0,
+                        statusId: 0,
+                        parentId: 0,
+                        amount: null
+                    };
+                    defer.resolve();
                 });
+
+                return defer.promise;
             };
-
-            this.updateDone = function() {
-                $scope.isUpdating = false;
-                transactionsService.setUpdateStatus(0);
-
-                var date = new Date();
-                $scope.transaction = {
-                    date: date,
-                    description: "",
-                    accountId: 0,
-                    categoryId: 0,
-                    statusId: 0,
-                    parentId: 0,
-                    amount: null
-                };
-                $scope.$apply();
-            }
         },
         link: function(scope, element, attrs, ctrl) {
             var form = $(element).find('.transaction-form');
@@ -82,21 +60,15 @@ app.directive('transactionsAdd', ['transactionsService', function(transactionsSe
                 if(ctrl.isValid()) {
                     button.fadeOut().promise().done(function () {
                         syncElement.fadeIn().promise().done(function () {
-                            ctrl.updateData();
+                            ctrl.updateData().then(function() {
+                                syncElement.fadeOut().promise().then(function() {
+                                    button.fadeIn();
+                                });
+                            });
                         });
                     });
                 }
             };
-
-            scope.$on('transactions:updated', function(event, data) {
-                if(transactionsService.getUpdateStatus() === 2 && scope.isUpdating) {
-                    syncElement.fadeOut().promise().then(function() {
-                        button.fadeIn().promise().then(function() {
-                            ctrl.updateDone();
-                        });
-                    });
-                }
-            });
 
         }
     }

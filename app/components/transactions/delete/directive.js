@@ -24,6 +24,10 @@ app.directive('transactionsDelete', ['transactionsService', function(transaction
 
                 return defer.promise
             };
+
+            this.updateData = function(transaction) {
+                return transactionsService.deleteTransaction(transaction);
+            };
         },
         link: function(scope, element, attrs, ctrl) {
             var deleteTrigger = $(element).find('.transaction-delete-trigger');
@@ -51,8 +55,7 @@ app.directive('transactionsDelete', ['transactionsService', function(transaction
                         if(response === 'delete') {
                             deleteTrigger.fadeOut().promise().then(function() {
                                 syncElement.fadeIn().promise().then(function() {
-                                    transactionsService.service('DELETE', 'transactions/' + transaction.id).then(function() {
-                                        transactionsService.setUpdateStatus(1);
+                                    ctrl.updateData(transaction).then(function() {
                                         isEditing = false;
                                     });
                                 });

@@ -45,58 +45,35 @@
   ],
   "transactions": [
     {
-      "id": 1,
-      "date": "2016-01-04T00:00:00.000Z",
-      "bank_descriptions": "transaction #1",
-      "description": "transaction #1",
+      "date": "2016-01-29T20:44:42.750Z",
+      "description": "asdfds",
       "accountId": 0,
-      "categoryId": 1,
+      "categoryId": 0,
       "statusId": 0,
-      "amount": 1
-    },
-    {
-      "id": 2,
-      "date": "2016-01-04T08:00:00.000Z",
-      "bank_descriptions": "transaction #1",
-      "description": "transaction #2",
-      "accountId": 1,
-      "categoryId": 1,
-      "statusId": 3,
-      "amount": 3,
-      "balance": 4
-    },
-    {
-      "id": 3,
-      "date": "2016-01-06T00:00:00.000Z",
-      "bank_descriptions": "transaction #1",
-      "description": "transaction #3",
-      "accountId": 1,
-      "categoryId": 0,
-      "statusId": 2,
+      "parentId": 0,
       "amount": 2,
-      "balance": 6
+      "id": 1
     },
     {
-      "date": "2016-01-27T20:06:21.249Z",
+      "date": "2016-01-29T20:44:50.862Z",
       "description": "asdf",
+      "accountId": 0,
+      "categoryId": 0,
+      "statusId": 0,
+      "parentId": 0,
+      "amount": 5,
+      "id": 2,
+      "balance": -4
+    },
+    {
+      "date": "2016-01-29T20:48:52.376Z",
+      "description": "asdfds",
       "accountId": 1,
       "categoryId": 0,
       "statusId": 1,
       "parentId": 0,
       "amount": 3,
-      "id": 4,
-      "balance": 5
-    },
-    {
-      "date": "2016-01-27T20:06:44.683Z",
-      "description": "asdf",
-      "accountId": 1,
-      "categoryId": 0,
-      "statusId": 1,
-      "parentId": 0,
-      "amount": 1,
-      "id": 5,
-      "balance": -2
+      "id": 3
     }
   ]
 }
